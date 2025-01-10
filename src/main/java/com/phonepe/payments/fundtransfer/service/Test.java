@@ -1,5 +1,7 @@
 package com.phonepe.payments.fundtransfer.service;
 
+import com.phonepe.payments.fundtransfer.codec.AuditEncoder;
+import com.phonepe.payments.fundtransfer.codec.AuditErrorDecoder;
 import com.phonepe.payments.fundtransfer.compression.Compression;
 import com.phonepe.payments.fundtransfer.compression.ZstdCompression;
 import com.phonepe.payments.fundtransfer.model.AuditProcessorConfig;
@@ -9,16 +11,13 @@ import java.util.List;
 public class Test {
 
   public static void main(String[] args) {
-    AuditProcessorConfig auditProcessorConfig = new AuditProcessorConfig();
-    Compression compression = new ZstdCompression(auditProcessorConfig);
-    AuditDataImpl auditData = new AuditDataImpl();
-
-    var encoder = new ServiceEncoder(compression, auditData, auditProcessorConfig);
-    var decoder = new ServiceDecoder(compression, auditData, auditProcessorConfig);
+    var encoder = new ServiceEncoder();
+    var decoder = new ServiceDecoder();
 
     var userClient = Feign.builder()
         .encoder(encoder)
         .decoder(decoder)
+        .errorDecoder(new AuditErrorDecoder())
         .target(UserClient.class, "http://localhost:3000");
 
     // Create a new user
@@ -31,5 +30,8 @@ public class Test {
     // Get all users
     List<User> users = userClient.getUsers();
     users.forEach(user -> System.out.println("User: " + user.getName() + ", Age: " + user.getAge()));
+
+    userClient.getError();
+//    users.forEach(user -> System.out.println("User: " + user.getName() + ", Age: " + user.getAge()));
   }
 }

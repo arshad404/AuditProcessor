@@ -11,6 +11,10 @@ public interface UserClient {
   @Headers({"Content-Type: application/json"})
   User createUser(User user);
 
+  @RequestLine("POST /error")
+  @Headers({"Content-Type: application/json"})
+  User getError();
+
   @RequestLine("GET /users")
   List<User> getUsers();
 }

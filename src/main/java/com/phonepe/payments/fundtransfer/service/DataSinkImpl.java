@@ -1,13 +1,13 @@
 package com.phonepe.payments.fundtransfer.service;
 
 import com.phonepe.payments.fundtransfer.compression.ZstdCompression;
-import com.phonepe.payments.fundtransfer.database.AuditData;
+import com.phonepe.payments.fundtransfer.database.DataSink;
 import com.phonepe.payments.fundtransfer.model.AuditProcessorConfig;
 import feign.RequestTemplate;
 import feign.Response;
 import java.util.Arrays;
 
-public class AuditDataImpl implements AuditData {
+public class DataSinkImpl implements DataSink {
 
   ZstdCompression zstdCompression = new ZstdCompression(AuditProcessorConfig.builder().build());
 
