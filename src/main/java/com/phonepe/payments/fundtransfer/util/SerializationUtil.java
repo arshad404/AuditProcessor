@@ -8,10 +8,7 @@ public class SerializationUtil {
   static final ObjectMapper objectMapper = new ObjectMapper();
 
   public static byte[] toByteArray(Object object) throws IOException {
-    // Convert the object to a JSON string
-    String jsonString = objectMapper.writeValueAsString(object);
-
-    // Convert the JSON string to a byte array
-    return jsonString.getBytes();
+    // Convert the object to a byte[]
+    return objectMapper.writeValueAsBytes(object);
   }
 }

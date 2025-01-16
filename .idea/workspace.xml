@@ -5,25 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="664ebc4c-ac27-4d9c-8581-65e029e573f8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dummy-server" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditEncoder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditErrorDecoder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/Custom4xxAuditErrorException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/Custom5xxAuditErrorException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/DefaultCodec.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/util/SerializationUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/BaseDecoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/EfficientAuditEncoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/EncryptionAwareAuditDecoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/AuditContextStoreService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/AuditDecoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/AuditEncoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/AuditErrorDecoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/AuditOperation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/AuditRequestContextException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/Constants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/ContextStoreDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/ContextStoreService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/ContextStoreServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/DefaultAuditContextStoreServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/NoopSinkService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/SinkService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/TransformService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec_1/TransformServiceNoopImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/model/AuditRequestEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/ServiceErrorDecoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/Decoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/Encoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/database/AuditData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/database/DataSink.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/AuditDataImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/DataSinkImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditEncoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditErrorDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditErrorDecoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/ServiceDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/ServiceDecoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/ServiceEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/ServiceEncoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/UserClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/service/UserClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/util/SerializationUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/util/SerializationUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +43,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Exception" />
         <option value="Interface" />
         <option value="Class" />
       </list>
@@ -54,16 +65,19 @@
   "keyToString": {
     "Application.FeignExample.executor": "Run",
     "Application.Main.executor": "Run",
-    "Application.Test.executor": "Debug",
+    "Application.Test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "change-3",
     "kotlin-language-version-configured": "true",
     "onboarding.tips.debug.path": "/Users/mohammad.arshad/Documents/git/encodecode/src/main/java/com/phonepe/payments/fundtransfer/Main.java",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.phonepe.payments.fundtransfer.codec_1" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -78,7 +92,7 @@
       <module name="AuditProcessor" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.phonepe.payments.fundtransfer.*" />
+          <option name="PATTERN" value="com.phonepe.payments.fundtransfer.codec.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -91,7 +105,7 @@
       <module name="AuditProcessor" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.phonepe.payments.fundtransfer.*" />
+          <option name="PATTERN" value="com.phonepe.payments.fundtransfer.codec.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
