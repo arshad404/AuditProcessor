@@ -1,44 +1,38 @@
 package com.phonepe.payments.fundtransfer.codec;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phonepe.payments.fundtransfer.model.AuditRequestEntity;
+import feign.FeignException;
+import feign.Request.HttpMethod;
 import feign.Response;
 import feign.codec.Decoder;
-import java.io.IOException;
 import java.lang.reflect.Type;
-import org.slf4j.MDC;
 
-public abstract class AuditDecoder extends BaseDecoder implements Decoder {
+public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
 
+  private final AuditContextStore<A> auditContextStore;
+  private final ITransformer transformer;
+  private final AuditDataStore dataStore;
 
-  protected AuditDecoder(ObjectMapper objectMapper) {
-    super(objectMapper);
+  protected AuditDecoder(AuditContextStore<A> auditContextStore, ITransformer transformer, AuditDataStore dataStore)
+      throws AuditRequestContextException {
+    if(auditContextStore == null) {
+      throw new AuditRequestContextException("AuditContextStore is not provided in AuditDecoder");
+    }
+    this.auditContextStore = auditContextStore;
+    this.transformer = transformer != null ? transformer : new NoopTransformer();
+    this.dataStore = dataStore != null ? dataStore : new NoopAuditDataStore();
   }
-  /*
-  decode:
-   */
+
   @Override
-  public Object decode(Response response, Type type) {
+  public Object decode(Response response, Type type) throws FeignException {
     try {
-      // RED: Type here is of response type and we are unmarshalling it with request string
-      var auditContext = getAuditContext(response, type);
-      var decodedResponse = decodeResponse(response, type);
-      saveAuditData(decodedResponse, type, auditContext);
+      Object decodedResponse = transformer.decodeResponse(response, type);
+      if(response.request().httpMethod() == HttpMethod.POST) {
+        var auditRequestContext = auditContextStore.getAuditContext();
+        dataStore.saveAuditData(auditRequestContext, decodedResponse);
+      }
       return decodedResponse;
     } catch (Exception e) {
-      return new RuntimeException(e);
+      throw new AuditEncoderException("error while decoding the audit", e);
     }
   }
-
-  //Make this Generic to allow user to implement custom audit entity
-  protected AuditRequestEntity getAuditContext(Response response, Type type)
-      throws JsonProcessingException {
-    return objectMapper.readValue(MDC.get("AUDIT_CONTEXT"), AuditRequestEntity.class);
-  }
-
-  protected Object decodeResponse(Response response, Type type) throws IOException {
-    return objectMapper.readValue(response.body().asInputStream(), type.getClass());
-  }
 }
-

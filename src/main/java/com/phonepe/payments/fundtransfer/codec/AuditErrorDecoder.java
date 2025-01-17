@@ -1,34 +1,40 @@
 package com.phonepe.payments.fundtransfer.codec;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phonepe.payments.fundtransfer.model.AuditRequestEntity;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import java.io.IOException;
-import java.util.logging.Logger;
-import org.slf4j.MDC;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
-public abstract class AuditErrorDecoder extends BaseDecoder implements ErrorDecoder {
-
-  protected final Logger logger = Logger.getLogger("AuditLog");
-
-  protected AuditErrorDecoder(ObjectMapper objectMapper) {
-    super(objectMapper);
-  }
+public class AuditErrorDecoder implements ErrorDecoder {
 
   @Override
   public Exception decode(String methodKey, Response response) {
+    String responseBody = null;
     try {
-      var exceptionResponse = decodeErrorResponse(methodKey, response);
-      var auditContext = objectMapper.readValue(MDC.get("AUDIT_CONTEXT"), AuditRequestEntity.class);
-      saveAuditData(exceptionResponse,AuditException.class, auditContext);
-      throw new AuditException(exceptionResponse, response, methodKey);
-    } catch(IOException e) {
-      throw new AuditException(null, response, methodKey);
+      responseBody = getResponseBody(response);
+      String message = String.format("Method: %s, Status: %d, Body: %s", methodKey, response.status(), responseBody);
+      if (response.status() >= 400 && response.status() < 500) {
+        return new FourXXErrorDecoderException(message);
+      } else if (response.status() >= 500) {
+        return new FiveXXErrorDecoderException(message);
+      } else {
+        return new Exception(message);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 
-  protected Object decodeErrorResponse(String methodKey, Response response) throws IOException  {
-    return objectMapper.readTree(response.body().asInputStream());
+  private String getResponseBody(Response response) throws IOException {
+    if (response.body() == null) {
+      return null;
+    }
+
+    // try-with-resources to ensure the scanner is closed automatically
+    try (Scanner scanner = new Scanner(response.body().asInputStream(), StandardCharsets.UTF_8)) {
+      // delimiter "\\A" to read the entire body as a single string
+      return scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+    }
   }
 }
