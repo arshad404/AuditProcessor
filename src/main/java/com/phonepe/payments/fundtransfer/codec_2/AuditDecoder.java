@@ -1,8 +1,6 @@
 package com.phonepe.payments.fundtransfer.codec_2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phonepe.payments.fundtransfer.codec_1.Constants;
-import com.phonepe.payments.fundtransfer.codec_1.ContextStoreDao;
 import feign.FeignException;
 import feign.Response;
 import feign.codec.Decoder;
@@ -28,7 +26,7 @@ public class AuditDecoder implements Decoder {
   public Object decode(Response response, Type type)
       throws IOException, FeignException {
     // GET REQUEST DATA
-    var auditRequestContext = auditContextStore.getAuditContext(Constants.MDCKey, ContextStoreDao.class);
+    var auditRequestContext = auditContextStore.getAuditContext();
     Object decodedResponse = transformer.decodeResponse(response, type);
     dataStore.saveAuditData(auditRequestContext, decodedResponse);
     return decodedResponse;

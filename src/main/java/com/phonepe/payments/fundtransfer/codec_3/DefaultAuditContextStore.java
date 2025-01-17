@@ -1,4 +1,4 @@
-package com.phonepe.payments.fundtransfer.codec_2;
+package com.phonepe.payments.fundtransfer.codec_3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.RequestTemplate;
@@ -8,6 +8,12 @@ public class DefaultAuditContextStore implements AuditContextStore<DefaultAuditC
 
   private final DefaultContextStore<DefaultAuditContext> defaultContextStore;
 
+  // Constructor accepting an already created DefaultContextStore for better flexibility | Enabling DI
+  public DefaultAuditContextStore(DefaultContextStore<DefaultAuditContext> defaultContextStore) {
+    this.defaultContextStore = defaultContextStore;
+  }
+
+  // Alternatively, constructor that creates a DefaultContextStore internally, using the ObjectMapper
   public DefaultAuditContextStore(ObjectMapper objectMapper) {
     this.defaultContextStore = new DefaultContextStore<>(DefaultAuditContext.class, objectMapper);
   }
@@ -15,17 +21,7 @@ public class DefaultAuditContextStore implements AuditContextStore<DefaultAuditC
   @Override
   public void setAuditContext(Object o, Type type, RequestTemplate requestTemplate) {
     try {
-      var contextKey = getAuditContextKey(o, type, requestTemplate);
-      var auditContext = DefaultAuditContext.builder()
-          .id(contextKey)
-          .method(requestTemplate.method())
-          .url(requestTemplate.url())
-          .type(type)
-          .requestObject(o)
-          .headers(requestTemplate.headers())
-          .build();
-      auditContext.setRequestData(requestTemplate.body());
-      defaultContextStore.setContext(auditContext);
+      defaultContextStore.setContext(new DefaultAuditContext());
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -38,9 +34,5 @@ public class DefaultAuditContextStore implements AuditContextStore<DefaultAuditC
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  public String getAuditContextKey(Object o, Type type, RequestTemplate requestTemplate) {
-    return String.valueOf(o.hashCode());
   }
 }

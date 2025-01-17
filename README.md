@@ -6,7 +6,7 @@
 
 
 ## Changes - 16-01-2025 - codec_2
-1. Make the Default implementation simple and not complex.
-2. Correct the naming - remove names like service make it generic
-3. Make ContextStorage value generic.
-4. Make simple initialization.
+1. Make the Default implementation simple and not complex. [done]
+2. Correct the naming - remove names like service make it generic [done]
+3. Make ContextStorage value generic. [done]
+4. Make simple initialization. [done]

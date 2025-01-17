@@ -3,6 +3,7 @@ package com.phonepe.payments.fundtransfer.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phonepe.payments.fundtransfer.codec.AuditEncoder;
 import com.phonepe.payments.fundtransfer.codec.AuditErrorDecoder;
+import com.phonepe.payments.fundtransfer.codec_2.DefaultAuditEncoder;
 import com.phonepe.payments.fundtransfer.compression.Compression;
 import com.phonepe.payments.fundtransfer.compression.ZstdCompression;
 import com.phonepe.payments.fundtransfer.model.AuditProcessorConfig;
@@ -13,7 +14,7 @@ public class Test {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
   public static void main(String[] args) {
-    var encoder = new ServiceEncoder(objectMapper);
+    var encoder = DefaultAuditEncoder.builder().objectMapper(objectMapper).build();
     var decoder = new ServiceDecoder(objectMapper);
 
     var userClient = Feign.builder()
