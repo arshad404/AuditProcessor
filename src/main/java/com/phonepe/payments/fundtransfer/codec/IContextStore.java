@@ -1,6 +1,6 @@
 package com.phonepe.payments.fundtransfer.codec;
 
-public interface IContextStore<T extends AuditContext> {
+public interface IContextStore<T extends IAuditContext> {
   /**
    * Stores a value in the context with a specified key.
    *

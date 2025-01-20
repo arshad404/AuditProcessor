@@ -16,7 +16,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class DefaultAuditContext implements AuditContext {
+public class DefaultAuditContext implements IAuditContext {
 
   private String id;
   private String utr;

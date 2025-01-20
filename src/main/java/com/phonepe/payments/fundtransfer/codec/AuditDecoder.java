@@ -6,13 +6,13 @@ import feign.Response;
 import feign.codec.Decoder;
 import java.lang.reflect.Type;
 
-public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
+public abstract class AuditDecoder<A extends IAuditContext> implements Decoder {
 
-  private final AuditContextStore<A> auditContextStore;
+  private final IAuditContextStore<A> auditContextStore;
   private final ITransformer transformer;
-  private final AuditDataStore dataStore;
+  private final IAuditDataStore dataStore;
 
-  protected AuditDecoder(AuditContextStore<A> auditContextStore, ITransformer transformer, AuditDataStore dataStore)
+  protected AuditDecoder(IAuditContextStore<A> auditContextStore, ITransformer transformer, IAuditDataStore dataStore)
       throws AuditRequestContextException {
     if(auditContextStore == null) {
       throw new AuditRequestContextException("AuditContextStore is not provided in AuditDecoder");

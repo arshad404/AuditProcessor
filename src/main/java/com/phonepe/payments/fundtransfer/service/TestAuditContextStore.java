@@ -1,7 +1,7 @@
 package com.phonepe.payments.fundtransfer.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phonepe.payments.fundtransfer.codec.AuditContextStore;
+import com.phonepe.payments.fundtransfer.codec.IAuditContextStore;
 import com.phonepe.payments.fundtransfer.codec.AuditRequestContextException;
 import com.phonepe.payments.fundtransfer.codec.DefaultAuditContext;
 import com.phonepe.payments.fundtransfer.codec.DefaultContextStore;
@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 
-public class TestAuditContextStore implements AuditContextStore<DefaultAuditContext> {
+public class TestAuditContextStore implements IAuditContextStore<DefaultAuditContext> {
 
 
   private final DefaultContextStore defaultContextStore;

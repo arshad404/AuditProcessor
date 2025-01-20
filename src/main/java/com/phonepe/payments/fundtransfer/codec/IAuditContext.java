@@ -1,5 +1,5 @@
 package com.phonepe.payments.fundtransfer.codec;
 
-public interface AuditContext {
+public interface IAuditContext {
   String getId();
 }

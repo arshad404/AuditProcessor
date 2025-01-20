@@ -7,13 +7,13 @@ import feign.codec.Encoder;
 import feign.jackson.JacksonEncoder;
 import java.lang.reflect.Type;
 
-public abstract class AuditEncoder<A extends AuditContext> implements Encoder {
+public abstract class AuditEncoder<A extends IAuditContext> implements Encoder {
 
-  private final AuditContextStore<A> auditContextStore;
+  private final IAuditContextStore<A> auditContextStore;
   private final ITransformer transformer;
   private final Encoder encoder;
 
-  protected AuditEncoder(ObjectMapper objectMapper, AuditContextStore<A> auditContextStore,
+  protected AuditEncoder(ObjectMapper objectMapper, IAuditContextStore<A> auditContextStore,
       ITransformer transformer, Encoder encoder) throws AuditRequestContextException {
     if(auditContextStore == null) {
       throw new AuditRequestContextException("AuditContextStore is not provided in AuditEncoder");
