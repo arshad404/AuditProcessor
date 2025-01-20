@@ -3,10 +3,10 @@ package com.phonepe.payments.fundtransfer.codec;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class NoopAuditDataStore implements IAuditDataStore {
+public class NoopAuditDataStore implements IAuditDataStore<DefaultAuditContext> {
 
   @Override
-  public void saveAuditData(Object auditRequestContext, Object auditResponse) {
-    log.info("Logging data using NoopAuditDataStore, AuditRequest context: {}, Audit Response: {}", auditRequestContext.toString(), auditResponse.toString());
+  public void saveAuditData(DefaultAuditContext auditContext) {
+    log.info("Logging data using NoopAuditDataStore, AuditRequest context: {}", auditContext);
   }
 }

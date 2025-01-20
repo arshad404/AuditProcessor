@@ -1,6 +1,6 @@
 package com.phonepe.payments.fundtransfer.codec;
 
 
-public interface IAuditDataStore {
-  void saveAuditData(Object auditRequestContext, Object auditResponse);
+public interface IAuditDataStore<T extends IAuditContext> {
+  void saveAuditData(T auditContext);
 }

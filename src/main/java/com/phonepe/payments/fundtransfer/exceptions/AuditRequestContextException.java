@@ -1,8 +1,8 @@
-package com.phonepe.payments.fundtransfer.codec;
+package com.phonepe.payments.fundtransfer.exceptions;
 
 public class AuditRequestContextException extends Exception {
 
-  AuditRequestContextException(String message) {
+  public AuditRequestContextException(String message) {
     super(message);
   }
 

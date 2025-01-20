@@ -1,6 +1,8 @@
 package com.phonepe.payments.fundtransfer.codec;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phonepe.payments.fundtransfer.exceptions.AuditEncoderException;
+import com.phonepe.payments.fundtransfer.exceptions.AuditRequestContextException;
 import feign.RequestTemplate;
 import feign.codec.EncodeException;
 import feign.codec.Encoder;

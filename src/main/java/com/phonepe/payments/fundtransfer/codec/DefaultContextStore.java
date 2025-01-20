@@ -3,6 +3,7 @@ package com.phonepe.payments.fundtransfer.codec;
 import static java.util.Objects.isNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phonepe.payments.fundtransfer.exceptions.ContextStoreException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 

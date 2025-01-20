@@ -1,10 +1,10 @@
-package com.phonepe.payments.fundtransfer.codec;
+package com.phonepe.payments.fundtransfer.exceptions;
 
 import feign.codec.EncodeException;
 
 public class AuditEncoderException extends EncodeException {
 
-  AuditEncoderException(String message, Exception e) {
+  public AuditEncoderException(String message, Exception e) {
     super(message, e);
   }
 }

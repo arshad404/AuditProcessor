@@ -1,6 +1,7 @@
 package com.phonepe.payments.fundtransfer.codec;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JavaType;
 import java.lang.reflect.Type;
 import java.util.Base64;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +21,6 @@ import lombok.Setter;
 public class DefaultAuditContext implements IAuditContext {
 
   private String id;
-  private String utr;
   private String requestData;
   private String type;
   private String method;
@@ -27,21 +28,27 @@ public class DefaultAuditContext implements IAuditContext {
   private Object requestObject;
   private Map<String, Collection<String>> headers;
 
-  public void setRequestData(byte[] data) {
+  private String responseData;
+  private int statusCode;
+  private String reason;
+
+  public void setRequestDataFromByte(byte[] data) {
     this.requestData = Base64.getEncoder().encodeToString(data);
   }
 
-  public void setType(Type type) {
-    this.type = type != null ? type.getTypeName() : null;
+  public void setTypeFromType(Type type) {
+    this.type = type.getTypeName();
   }
 
   @JsonIgnore
-  public Type getType() throws ClassNotFoundException {
-    return type != null ? Class.forName(type) : null;
+  public byte[] getRequestDataFromByte() {
+    return Base64.getDecoder().decode(requestData);
   }
 
-  public byte[] getRequestData() {
-    return Base64.getDecoder().decode(requestData);
+  @JsonIgnore
+  @SneakyThrows
+  public Type getTypeFromType() {
+    return Class.forName(this.type);
   }
 
   @Override

@@ -1,11 +1,9 @@
-package com.phonepe.payments.fundtransfer.service;
+package com.phonepe.payments.fundtransfer.codec;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phonepe.payments.fundtransfer.codec.IAuditContextStore;
-import com.phonepe.payments.fundtransfer.codec.AuditRequestContextException;
-import com.phonepe.payments.fundtransfer.codec.DefaultAuditContext;
-import com.phonepe.payments.fundtransfer.codec.DefaultContextStore;
+import com.phonepe.payments.fundtransfer.exceptions.AuditRequestContextException;
 import feign.RequestTemplate;
+import feign.Response;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
@@ -30,13 +28,23 @@ public class TestAuditContextStore implements IAuditContextStore<DefaultAuditCon
   public void setAuditContext(Object o, Type type, RequestTemplate requestTemplate)
       throws AuditRequestContextException {
     try {
-      var auditContext = DefaultAuditContext.builder().id("key123").headers(requestTemplate.headers()).requestObject(o).build();
-      auditContext.setType(type);
-      auditContext.setRequestData(objectMapper.writeValueAsBytes(o));
+      var auditContext = DefaultAuditContext.builder()
+          .id("key123")
+          .headers(requestTemplate.headers())
+          .method(requestTemplate.method())
+          .url(requestTemplate.url())
+          .requestObject(o).build();
+      auditContext.setTypeFromType(type);
+      auditContext.setRequestDataFromByte(objectMapper.writeValueAsBytes(o));
       defaultContextStore.setContext(auditContext);
     } catch (Exception e) {
       throw new AuditRequestContextException("error while setting the default context", e);
     }
+  }
+
+  @Override
+  public void setAuditContext(Object object, Response response, Type type) {
+//    defaultContextStore.setContext(auditContext);
   }
 
   @Override

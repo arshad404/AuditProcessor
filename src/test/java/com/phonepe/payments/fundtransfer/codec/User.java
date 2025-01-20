@@ -1,4 +1,4 @@
-package com.phonepe.payments.fundtransfer.service;
+package com.phonepe.payments.fundtransfer.codec;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
