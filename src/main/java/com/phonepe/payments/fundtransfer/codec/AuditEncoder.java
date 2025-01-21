@@ -9,30 +9,34 @@ import feign.codec.Encoder;
 import feign.jackson.JacksonEncoder;
 import java.lang.reflect.Type;
 
-public abstract class AuditEncoder<A extends IAuditContext> implements Encoder {
+public abstract class AuditEncoder<A extends AuditContext> implements Encoder {
 
-  private final IAuditContextStore<A> auditContextStore;
-  private final ITransformer transformer;
+  private final AuditContextStore<A> auditContextStore;
+  private final Transformer transformer;
   private final Encoder encoder;
+  private final ObjectMapper objectMapper;
 
-  protected AuditEncoder(ObjectMapper objectMapper, IAuditContextStore<A> auditContextStore,
-      ITransformer transformer, Encoder encoder) throws AuditRequestContextException {
+  protected AuditEncoder(ObjectMapper objectMapper, AuditContextStore<A> auditContextStore,
+      Transformer transformer, Encoder encoder) throws AuditRequestContextException {
     if(auditContextStore == null) {
       throw new AuditRequestContextException("AuditContextStore is not provided in AuditEncoder");
     }
-    ObjectMapper mapper = objectMapper != null ? objectMapper : new ObjectMapper();
+    this.objectMapper = objectMapper != null ? objectMapper : new ObjectMapper();
     this.auditContextStore = auditContextStore;
     this.transformer = transformer != null ? transformer : new NoopTransformer();
-    this.encoder = encoder != null ? encoder : new JacksonEncoder(mapper);
+    this.encoder = encoder != null ? encoder : new JacksonEncoder(this.objectMapper);
   }
 
   @Override
   public void encode(Object object, Type bodyType, RequestTemplate template) throws EncodeException {
     try {
       auditContextStore.setAuditContext(object, bodyType, template);
-      transformer.transformRequest(object, bodyType, template);
-      encoder.encode(object, bodyType, template);
-    } catch (AuditRequestContextException e) {
+      var transformedObject  = transformer.transformRequest(object, bodyType, template);
+      //Get type of transformed object and then pass that to the delegated encoder
+      var transformedType = this.objectMapper.getTypeFactory()
+          .findClass(transformedObject.getClass().getName());
+      encoder.encode(transformedObject, transformedType, template);
+    } catch (AuditRequestContextException | ClassNotFoundException e) {
       throw new AuditEncoderException("exception while encoding while auditing", e);
     }
   }

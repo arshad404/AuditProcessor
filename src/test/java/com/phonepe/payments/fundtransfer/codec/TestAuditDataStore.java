@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class TestAuditDataStore implements IAuditDataStore<DefaultAuditContext> {
+public class TestAuditDataStore implements AuditDataStore<DefaultAuditContext> {
 
   private final Map<String, Object> auditDataMap = new HashMap<>();
 

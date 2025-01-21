@@ -7,7 +7,7 @@ import feign.jackson.JacksonDecoder;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
-public class NoopTransformer implements ITransformer {
+public class NoopTransformer implements Transformer {
 
   private final Decoder jacksonDecoder;
 
@@ -20,8 +20,9 @@ public class NoopTransformer implements ITransformer {
   }
 
   @Override
-  public void transformRequest(Object o, Type type, RequestTemplate requestTemplate) {
+  public Object transformRequest(Object o, Type type, RequestTemplate requestTemplate) {
     // This is a noop transformer which does nothing
+    return o;
   }
 
   @Override

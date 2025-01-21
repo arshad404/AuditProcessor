@@ -8,7 +8,7 @@ import lombok.Builder;
 public class DefaultAuditDecoder extends AuditDecoder<DefaultAuditContext> {
 
   @Builder
-  public DefaultAuditDecoder(IAuditContextStore<DefaultAuditContext> auditContextStore, NoopTransformer transformer,
+  public DefaultAuditDecoder(AuditContextStore<DefaultAuditContext> auditContextStore, NoopTransformer transformer,
       NoopAuditDataStore dataStore) throws AuditRequestContextException, DataStoreException {
     super(auditContextStore, transformer, dataStore);
   }

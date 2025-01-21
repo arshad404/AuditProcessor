@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phonepe.payments.fundtransfer.exceptions.AuditRequestContextException;
 import feign.RequestTemplate;
 import feign.Response;
+import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
-public class TestAuditContextStore implements IAuditContextStore<DefaultAuditContext> {
+public class TestAuditContextStore implements AuditContextStore<DefaultAuditContext> {
 
 
   private final DefaultContextStore defaultContextStore;
@@ -44,7 +45,25 @@ public class TestAuditContextStore implements IAuditContextStore<DefaultAuditCon
 
   @Override
   public void setAuditContext(Object object, Response response, Type type) {
-//    defaultContextStore.setContext(auditContext);
+    try {
+      var context = defaultContextStore.getContext();
+      context.setResponseData(objectMapper.writeValueAsString(object));
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public String setAuditContext(String methodKey, Response response) {
+    try {
+      String responseBody = getResponseBody(response);
+      String message = String.format("Method: %s, Status: %d, Body: %s", methodKey, response.status(), responseBody);
+      var context = defaultContextStore.getContext();
+      context.setResponseData(objectMapper.writeValueAsString(message));
+      return message;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -56,12 +75,14 @@ public class TestAuditContextStore implements IAuditContextStore<DefaultAuditCon
     }
   }
 
-  private String getHeaderValue(RequestTemplate template, String headerName) {
-    Map<String, Collection<String>> headers = template.headers();
-    Collection<String> values = headers.get(headerName);
-    if (values != null && !values.isEmpty()) {
-      return values.iterator().next();
+  private String getResponseBody(Response response) throws IOException {
+    if (response.body() == null) {
+      return null;
     }
-    return null;
+    // try-with-resources to ensure the scanner is closed automatically
+    try (Scanner scanner = new Scanner(response.body().asInputStream(), StandardCharsets.UTF_8)) {
+      // delimiter "\\A" to read the entire body as a single string
+      return scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+    }
   }
 }

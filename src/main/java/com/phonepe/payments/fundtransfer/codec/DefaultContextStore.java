@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
 @Slf4j
-public class DefaultContextStore implements IContextStore<DefaultAuditContext> {
+public class DefaultContextStore implements ContextStore<DefaultAuditContext> {
 
   public static final String AUDIT_CONTEXT_KEY = "AUDIT_CONTEXT_KEY";
   private final ObjectMapper objectMapper;
