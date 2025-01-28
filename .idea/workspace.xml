@@ -5,10 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="664ebc4c-ac27-4d9c-8581-65e029e573f8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceAuditContextStore.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditContextStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditContextStore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/NoopAuditDataStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/NoopAuditDataStore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceAuditContextStore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceAuditDataStore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceAuditDecoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceAuditEncoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceTransformer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/UserChange.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/UserClient.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,31 +44,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.DefaultTest.executor": "Run",
-    "Application.FeignExample.executor": "Run",
-    "Application.Main.executor": "Run",
-    "Application.MockServer.executor": "Run",
-    "Application.ServiceTest.executor": "Run",
-    "Application.Test.executor": "Run",
-    "JUnit.DefaultAuditEncoderDecoderTest.executor": "Run",
-    "JUnit.DefaultAuditEncoderDecoderTest.testSuccess2xxGet.executor": "Run",
-    "JUnit.DefaultAuditEncoderDecoderTest.testSuccess2xxPOST.executor": "Debug",
-    "JUnit.DefaultAuditEncoderDecoderTest.testSuccess5xxException.executor": "Run",
-    "JUnit.MockServerTest.executor": "Run",
-    "JUnit.MockServerTest.testCreateUser.executor": "Run",
-    "Maven.AuditProcessor [install].executor": "Run",
-    "Maven.AuditProcessor [package].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "change-6-cleanup-patch-3",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/mohammad.arshad/Documents/git/encodecode/src/main/java/com/phonepe/payments/fundtransfer/ServiceTest",
-    "onboarding.tips.debug.path": "/Users/mohammad.arshad/Documents/git/encodecode/src/main/java/com/phonepe/payments/fundtransfer/Main.java",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.DefaultTest.executor&quot;: &quot;Run&quot;,
+    &quot;Application.FeignExample.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MockServer.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DefaultAuditEncoderDecoderTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DefaultAuditEncoderDecoderTest.testSuccess2xxGet.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DefaultAuditEncoderDecoderTest.testSuccess2xxPOST.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.DefaultAuditEncoderDecoderTest.testSuccess5xxException.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MockServerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MockServerTest.testCreateUser.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.AuditProcessor [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.AuditProcessor [deploy].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.AuditProcessor [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.AuditProcessor [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.AuditProcessor [validate].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;change-6-cleanup-patch-3-example&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/mohammad.arshad/Documents/git/encodecode/src/main/java/com/phonepe/payments/fundtransfer/ServiceTest&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/mohammad.arshad/Documents/git/encodecode/src/main/java/com/phonepe/payments/fundtransfer/Main.java&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.phonepe.payments.fundtransfer.codec" />
@@ -83,7 +94,7 @@
       <recent name="com.phonepe.payments.fundtransfer" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.ServiceTest">
+  <component name="RunManager" selected="JUnit.DefaultAuditEncoderDecoderTest">
     <configuration name="MockServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.phonepe.payments.fundtransfer.codec.MockServer" />
       <module name="AuditProcessor" />
@@ -159,9 +170,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.DefaultAuditEncoderDecoderTest" />
         <item itemvalue="Application.ServiceTest" />
         <item itemvalue="JUnit.DefaultAuditEncoderDecoderTest.testSuccess2xxPOST" />
-        <item itemvalue="JUnit.DefaultAuditEncoderDecoderTest" />
         <item itemvalue="Application.MockServer" />
         <item itemvalue="JUnit.MockServerTest.testCreateUser" />
       </list>
@@ -186,74 +197,9 @@
           <option name="timeStamp" value="111" />
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceTransformer.java</url>
-          <line>19</line>
-          <option name="timeStamp" value="133" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditEncoder.java</url>
-          <line>33</line>
-          <option name="timeStamp" value="136" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditEncoder.java</url>
-          <line>35</line>
-          <option name="timeStamp" value="137" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditEncoder.java</url>
-          <line>37</line>
-          <option name="timeStamp" value="138" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java</url>
-          <line>32</line>
-          <option name="timeStamp" value="140" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java</url>
-          <line>33</line>
-          <option name="timeStamp" value="141" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java</url>
-          <line>34</line>
-          <option name="timeStamp" value="142" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java</url>
-          <line>36</line>
-          <option name="timeStamp" value="143" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java</url>
-          <line>38</line>
-          <option name="timeStamp" value="144" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceTransformer.java</url>
-          <line>24</line>
-          <option name="timeStamp" value="147" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java</url>
-          <line>35</line>
-          <option name="timeStamp" value="155" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java</url>
-          <line>40</line>
-          <option name="timeStamp" value="156" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>jar://$MAVEN_REPOSITORY$/io/github/openfeign/feign-core/11.0/feign-core-11.0-sources.jar!/feign/codec/Decoder.java</url>
           <line>84</line>
           <option name="timeStamp" value="159" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/servicetest/ServiceTransformer.java</url>
-          <line>25</line>
-          <option name="timeStamp" value="160" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
