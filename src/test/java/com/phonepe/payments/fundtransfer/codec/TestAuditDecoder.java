@@ -12,4 +12,4 @@ public class TestAuditDecoder extends AuditDecoder<DefaultAuditContext> {
       TestAuditDataStore dataStore) throws AuditRequestContextException, DataStoreException {
     super(auditContextStore, transformer, dataStore);
   }
-  }
+}

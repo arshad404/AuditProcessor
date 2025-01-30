@@ -19,7 +19,8 @@ public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
   private final Transformer transformer;
   private final AuditDataStore<A> dataStore;
 
-  protected AuditDecoder(AuditContextStore<A> auditContextStore, Transformer transformer, AuditDataStore<A> dataStore)
+  protected AuditDecoder(AuditContextStore<A> auditContextStore, Transformer transformer,
+      AuditDataStore<A> dataStore)
       throws AuditRequestContextException, DataStoreException {
     nullValidation(dataStore, auditContextStore);
     this.auditContextStore = auditContextStore;
@@ -31,7 +32,7 @@ public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
   public Object decode(Response response, Type type) throws FeignException {
     try {
       Object decodedResponse = transformer.decodeResponse(response, type);
-      if(isEligibleForAuditing(response)) {
+      if (isEligibleForAuditing(response)) {
         var auditRequestContext = auditContextStore.getAuditContext();
         auditContextStore.setAuditContext(decodedResponse, response, type);
         dataStore.saveAuditData(auditRequestContext);
@@ -44,15 +45,16 @@ public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
 
   private void nullValidation(AuditDataStore<A> dataStore, AuditContextStore<A> auditContextStore)
       throws AuditRequestContextException, DataStoreException {
-    if(isNull(auditContextStore)) {
+    if (isNull(auditContextStore)) {
       throw new AuditRequestContextException("AuditContextStore is not provided in AuditDecoder");
     }
-    if(isNull(dataStore)) {
+    if (isNull(dataStore)) {
       throw new DataStoreException("AuditContextStore is not provided in AuditDecoder");
     }
   }
 
   private boolean isEligibleForAuditing(Response response) {
+//    return false;
     return response.request().httpMethod() != HttpMethod.GET;
   }
 }

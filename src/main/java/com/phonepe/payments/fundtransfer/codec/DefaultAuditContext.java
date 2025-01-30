@@ -54,4 +54,8 @@ public class DefaultAuditContext implements AuditContext {
   public String getId() {
     return "DefaultAuditContextKey";
   }
+
+  public static DefaultAuditContext getDefaultAuditContext() {
+    return new DefaultAuditContext();
+  }
 }

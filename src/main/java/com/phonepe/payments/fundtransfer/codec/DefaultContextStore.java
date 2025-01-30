@@ -17,6 +17,25 @@ public class DefaultContextStore implements ContextStore<DefaultAuditContext> {
     this.objectMapper = objectMapper;
   }
 
+  public DefaultAuditContext getContext() throws ContextStoreException {
+    try {
+      var contextKey = MDC.get(AUDIT_CONTEXT_KEY);
+      if (isNull(contextKey)) {
+        log.error("no context key is available for auditing");
+        return DefaultAuditContext.getDefaultAuditContext();
+      }
+      var auditData = MDC.get(contextKey);
+      if (isNull(auditData)) {
+        log.error("no context key is available for auditing");
+        return DefaultAuditContext.getDefaultAuditContext();
+      }
+      return objectMapper.readValue(auditData, DefaultAuditContext.class);
+    } catch (Exception e) {
+      log.error("Failed to deserialize object: {}", e.getMessage());
+      throw new ContextStoreException("Failed to deserialize object: " + e.getMessage(), e);
+    }
+  }
+
   public void setContext(DefaultAuditContext value) throws ContextStoreException {
     try {
       // Serialize the value to JSON string
@@ -26,23 +45,6 @@ public class DefaultContextStore implements ContextStore<DefaultAuditContext> {
     } catch (Exception e) {
       log.error("Failed to serialize object: {}", e.getMessage());
       throw new ContextStoreException("Failed to serialize object: " + e.getMessage(), e);
-    }
-  }
-
-  public DefaultAuditContext getContext() throws ContextStoreException {
-    try {
-      var contextKey = MDC.get(AUDIT_CONTEXT_KEY);
-      if(isNull(contextKey)) {
-        throw  new IllegalStateException("No context key is available");
-      }
-      var auditData = MDC.get(contextKey);
-      if(isNull(auditData)) {
-        throw  new IllegalStateException("No audit context is available");
-      }
-      return objectMapper.readValue(auditData, DefaultAuditContext.class);
-    } catch (Exception e) {
-      log.error("Failed to deserialize object: {}", e.getMessage());
-      throw new ContextStoreException("Failed to deserialize object: " + e.getMessage(), e);
     }
   }
 }

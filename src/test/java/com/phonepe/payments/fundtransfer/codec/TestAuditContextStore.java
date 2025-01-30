@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 public class TestAuditContextStore implements AuditContextStore<DefaultAuditContext> {
 
-
   private final DefaultContextStore defaultContextStore;
   ObjectMapper objectMapper = new ObjectMapper();
 
@@ -57,7 +56,8 @@ public class TestAuditContextStore implements AuditContextStore<DefaultAuditCont
   public String setAuditContext(String methodKey, Response response) {
     try {
       String responseBody = getResponseBody(response);
-      String message = String.format("Method: %s, Status: %d, Body: %s", methodKey, response.status(), responseBody);
+      String message = String.format("Method: %s, Status: %d, Body: %s", methodKey,
+          response.status(), responseBody);
       var context = defaultContextStore.getContext();
       context.setResponseData(objectMapper.writeValueAsString(message));
       return message;
@@ -74,6 +74,12 @@ public class TestAuditContextStore implements AuditContextStore<DefaultAuditCont
       throw new AuditRequestContextException("error while getting the default context", e);
     }
   }
+
+  @Override
+  public void setAuditContext(RequestTemplate template) {
+
+  }
+
 
   private String getResponseBody(Response response) throws IOException {
     if (response.body() == null) {
