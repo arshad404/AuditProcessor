@@ -227,11 +227,32 @@ public abstract class AuditProcessorWireMockServerTest {
   }
 
   void setupErrorScenarios() {
-    stubFor(get(urlPathEqualTo("/api/error"))
+    stubFor(get(urlPathEqualTo("/api/error/4xx"))
         .willReturn(aResponse()
             .withStatus(401)  // Unauthorized error
             .withHeader("Content-Type", "application/json")
             .withBody("{\"error\":\"Unauthorized access\", \"code\":401}")
+        ));
+
+    stubFor(post(urlPathEqualTo("/api/error/4xx"))
+        .willReturn(aResponse()
+            .withStatus(401)  // Unauthorized error
+            .withHeader("Content-Type", "application/json")
+            .withBody("{\"error\":\"Unauthorized access\", \"code\":401}")
+        ));
+
+    stubFor(get(urlPathEqualTo("/api/error/5xx"))
+        .willReturn(aResponse()
+            .withStatus(501)  // Unauthorized error
+            .withHeader("Content-Type", "application/json")
+            .withBody("{\"error\":\"Server Down\", \"code\":501}")
+        ));
+
+    stubFor(post(urlPathEqualTo("/api/error/5xx"))
+        .willReturn(aResponse()
+            .withStatus(501)  // Unauthorized error
+            .withHeader("Content-Type", "application/json")
+            .withBody("{\"error\":\"Server Down\", \"code\":501}")
         ));
   }
 }

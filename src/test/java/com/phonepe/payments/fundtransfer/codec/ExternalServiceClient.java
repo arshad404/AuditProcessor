@@ -75,6 +75,15 @@ public interface ExternalServiceClient {
   @RequestLine("POST /api/users/body/without/response/type")
   PostUserBody postUserWithBodyWithoutResponseType(PostUserBody postUserBody);
 
-  @RequestLine("GET /api/error")
-  GenericError getError();
+  @RequestLine("GET /api/error/4xx")
+  GenericError getError4xx();
+
+  @RequestLine("POST /api/error/4xx")
+  GenericError postError4xx();
+
+  @RequestLine("GET /api/error/5xx")
+  GenericError getError5xx();
+
+  @RequestLine("POST /api/error/5xx")
+  GenericError postError5xx();
 }

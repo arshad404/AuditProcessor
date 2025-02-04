@@ -399,7 +399,7 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
   @Order(18)
   void TestErrorWithGet() {
     Exception exception = assertThrows(Exception.class, () -> {
-      externalServiceClient.getError(); // Simulate the API call
+      externalServiceClient.getError4xx(); // Simulate the API call
     });
 
     assertEquals(401, ((ApiException) exception).getStatusCode());
@@ -411,6 +411,75 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertEquals(401, val.getStatusCode());
             assertEquals("{\"error\":\"Unauthorized access\", \"code\":401}", val.getErrorBody());
             assertEquals("GET", val.getMethod());
+
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Test
+  @Order(19)
+  void TestErrorWithPOST() {
+    Exception exception = assertThrows(Exception.class, () -> {
+      externalServiceClient.postError4xx(); // Simulate the API call
+    });
+
+    assertEquals(401, ((ApiException) exception).getStatusCode());
+    assertTrue(exception.getMessage().contains("Unauthorized access"));
+
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(401, val.getStatusCode());
+            assertEquals("{\"error\":\"Unauthorized access\", \"code\":401}", val.getErrorBody());
+            assertEquals("POST", val.getMethod());
+
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Test
+  @Order(18)
+  void TestErrorWithGET5xx() {
+    Exception exception = assertThrows(Exception.class, () -> {
+      externalServiceClient.getError5xx(); // Simulate the API call
+    });
+
+    assertEquals(501, ((ApiException) exception).getStatusCode());
+    assertTrue(exception.getMessage().contains("Server Down"));
+
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(501, val.getStatusCode());
+            assertEquals("{\"error\":\"Server Down\", \"code\":501}", val.getErrorBody());
+            assertEquals("GET", val.getMethod());
+
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Test
+  @Order(18)
+  void TestErrorWithPOST5xx() {
+    Exception exception = assertThrows(Exception.class, () -> {
+      externalServiceClient.postError5xx(); // Simulate the API call
+    });
+
+    assertEquals(501, ((ApiException) exception).getStatusCode());
+    assertTrue(exception.getMessage().contains("Server Down"));
+
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(501, val.getStatusCode());
+            assertEquals("{\"error\":\"Server Down\", \"code\":501}", val.getErrorBody());
+            assertEquals("POST", val.getMethod());
 
           } catch (Exception e) {
             throw new RuntimeException(e);
