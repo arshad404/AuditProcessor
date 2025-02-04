@@ -23,8 +23,6 @@ public class CodecRegistry {
 
       // Check if the return type is Response.class
       boolean isResponseType = method.getReturnType().equals(Response.class);
-
-      // Save this information in the map
       isApiReturnTypeResponse.put(methodKey, isResponseType);
     }
   }
