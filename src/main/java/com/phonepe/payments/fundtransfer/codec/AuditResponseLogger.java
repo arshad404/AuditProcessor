@@ -33,7 +33,6 @@ public abstract class AuditResponseLogger<T extends AuditContext> extends Logger
 
     if (Boolean.TRUE.equals(isDecoderSkipped)) {
       auditDataStore.saveAuditData(this.requestContextManager.getContext());
-      this.requestContextManager.clearContext();
     }
 
     return super.logAndRebufferResponse(configKey, logLevel, response, elapsedTime);

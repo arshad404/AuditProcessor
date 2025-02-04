@@ -52,9 +52,7 @@ public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
 
       // save the data in the response
       auditDataStore.saveAuditData(this.requestContextManager.getContext());
-
-      this.requestContextManager.clearContext();
-
+      
       return transformedObject;
     } catch (IOException e) {
       throw new CodecException("Failed to decode the audit response", e);
