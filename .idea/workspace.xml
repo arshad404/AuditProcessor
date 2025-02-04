@@ -7,7 +7,16 @@
     <list default="true" id="664ebc4c-ac27-4d9c-8581-65e029e573f8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditEncoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditErrorDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditErrorDecoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditResponseLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditResponseLogger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/DefaultAuditContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/DefaultAuditContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/DefaultAuditErrorDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/DefaultAuditErrorDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/DefaultAuditRequestInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/DefaultAuditRequestInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/phonepe/payments/fundtransfer/codec/AuditProcessorWireMockServerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/phonepe/payments/fundtransfer/codec/AuditProcessorWireMockServerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/phonepe/payments/fundtransfer/codec/BaseAuditProcessorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/phonepe/payments/fundtransfer/codec/BaseAuditProcessorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/phonepe/payments/fundtransfer/codec/ExternalServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/phonepe/payments/fundtransfer/codec/ExternalServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/phonepe/payments/fundtransfer/codec/GetAuditProcessorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/phonepe/payments/fundtransfer/codec/GetAuditProcessorTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +73,9 @@
     "JUnit.GetAuditProcessorTest.TestErrorWithGET5xx.executor": "Run",
     "JUnit.GetAuditProcessorTest.TestErrorWithGet.executor": "Run",
     "JUnit.GetAuditProcessorTest.TestErrorWithPOST.executor": "Run",
+    "JUnit.GetAuditProcessorTest.TestErrorWithPOST4xxWithBody.executor": "Run",
     "JUnit.GetAuditProcessorTest.TestErrorWithPOST5xx.executor": "Run",
+    "JUnit.GetAuditProcessorTest.TestErrorWithPOST5xxWithBody.executor": "Run",
     "JUnit.GetAuditProcessorTest.TestGetUser.executor": "Run",
     "JUnit.GetAuditProcessorTest.TestGetUserWithHeader.executor": "Run",
     "JUnit.GetAuditProcessorTest.TestGetUserWithPathParam.executor": "Run",
@@ -80,6 +91,8 @@
     "JUnit.GetAuditProcessorTest.TestPOSTUserWithHeader.executor": "Run",
     "JUnit.GetAuditProcessorTest.TestPOSTUserWithPathParam.executor": "Run",
     "JUnit.GetAuditProcessorTest.TestPOSTUserWithQueryParam.executor": "Run",
+    "JUnit.GetAuditProcessorTest.TestPUTUserWithBody.executor": "Run",
+    "JUnit.GetAuditProcessorTest.TestPUTUserWithBodyWithoutResponseType.executor": "Run",
     "JUnit.GetAuditProcessorTest.executor": "Run",
     "JUnit.GetAuditProcessorTest.testSuccess2xxGet.executor": "Run",
     "JUnit.MockServerTest.executor": "Run",
@@ -143,7 +156,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GetAuditProcessorTest.TestErrorWithGET5xx" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GetAuditProcessorTest.TestErrorWithPOST4xxWithBody" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="AuditProcessor" />
       <extension name="coverage">
         <pattern>
@@ -153,13 +166,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.phonepe.payments.fundtransfer.codec" />
       <option name="MAIN_CLASS_NAME" value="com.phonepe.payments.fundtransfer.codec.GetAuditProcessorTest" />
-      <option name="METHOD_NAME" value="TestErrorWithGET5xx" />
+      <option name="METHOD_NAME" value="TestErrorWithPOST4xxWithBody" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GetAuditProcessorTest.TestErrorWithGet" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GetAuditProcessorTest.TestErrorWithPOST5xxWithBody" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="AuditProcessor" />
       <extension name="coverage">
         <pattern>
@@ -169,13 +182,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.phonepe.payments.fundtransfer.codec" />
       <option name="MAIN_CLASS_NAME" value="com.phonepe.payments.fundtransfer.codec.GetAuditProcessorTest" />
-      <option name="METHOD_NAME" value="TestErrorWithGet" />
+      <option name="METHOD_NAME" value="TestErrorWithPOST5xxWithBody" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GetAuditProcessorTest.TestErrorWithPOST" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GetAuditProcessorTest.TestPUTUserWithBody" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="AuditProcessor" />
       <extension name="coverage">
         <pattern>
@@ -185,13 +198,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.phonepe.payments.fundtransfer.codec" />
       <option name="MAIN_CLASS_NAME" value="com.phonepe.payments.fundtransfer.codec.GetAuditProcessorTest" />
-      <option name="METHOD_NAME" value="TestErrorWithPOST" />
+      <option name="METHOD_NAME" value="TestPUTUserWithBody" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GetAuditProcessorTest.TestErrorWithPOST5xx" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GetAuditProcessorTest.TestPUTUserWithBodyWithoutResponseType" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="AuditProcessor" />
       <extension name="coverage">
         <pattern>
@@ -201,7 +214,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.phonepe.payments.fundtransfer.codec" />
       <option name="MAIN_CLASS_NAME" value="com.phonepe.payments.fundtransfer.codec.GetAuditProcessorTest" />
-      <option name="METHOD_NAME" value="TestErrorWithPOST5xx" />
+      <option name="METHOD_NAME" value="TestPUTUserWithBodyWithoutResponseType" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -210,10 +223,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.GetAuditProcessorTest" />
-        <item itemvalue="JUnit.GetAuditProcessorTest.TestErrorWithPOST5xx" />
-        <item itemvalue="JUnit.GetAuditProcessorTest.TestErrorWithGET5xx" />
-        <item itemvalue="JUnit.GetAuditProcessorTest.TestErrorWithPOST" />
-        <item itemvalue="JUnit.GetAuditProcessorTest.TestErrorWithGet" />
+        <item itemvalue="JUnit.GetAuditProcessorTest.TestErrorWithPOST4xxWithBody" />
+        <item itemvalue="JUnit.GetAuditProcessorTest.TestPUTUserWithBodyWithoutResponseType" />
+        <item itemvalue="JUnit.GetAuditProcessorTest.TestPUTUserWithBody" />
+        <item itemvalue="JUnit.GetAuditProcessorTest.TestErrorWithPOST5xxWithBody" />
       </list>
     </recent_temporary>
   </component>
@@ -235,6 +248,11 @@
           <properties class="com.phonepe.payments.fundtransfer.exceptions.AuditRequestContextException" package="com.phonepe.payments.fundtransfer.exceptions" />
           <option name="timeStamp" value="111" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/phonepe/payments/fundtransfer/codec/AuditErrorDecoder.java</url>
+          <line>27</line>
+          <option name="timeStamp" value="376" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>

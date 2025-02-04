@@ -25,7 +25,7 @@ public abstract class AuditResponseLogger<T extends AuditContext> extends Logger
   protected Response logAndRebufferResponse(String configKey, Level logLevel, Response response,
       long elapsedTime) throws IOException {
 
-    Boolean isDecoderSkipped = Utils.isDecoderSkipped(configKey);
+    Boolean isDecoderSkipped = Utils.isDecoderSkipped(configKey) && response.status() < 400;
 
     var context = requestContextManager.getContext();
     this.updateAuditContext(context, response, isDecoderSkipped);

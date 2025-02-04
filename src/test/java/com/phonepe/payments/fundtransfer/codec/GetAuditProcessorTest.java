@@ -14,6 +14,7 @@ import com.phonepe.payments.fundtransfer.codec.model.GetHeader;
 import com.phonepe.payments.fundtransfer.codec.model.GetPath;
 import com.phonepe.payments.fundtransfer.codec.model.GetQuery;
 import com.phonepe.payments.fundtransfer.codec.model.PostUserBody;
+import feign.FeignException;
 import feign.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -79,7 +80,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("GET", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -99,7 +99,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("GET", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -121,7 +120,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("DELETE", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -204,7 +202,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
     Response response = externalServiceClient.headUserWithHeader("txn123");
     String transactionId = response.headers().get("TRANSACTION_ID").iterator().next();
     assertEquals("txn123", transactionId);
-
     String method = response.headers().get("method").iterator().next();
     assertEquals("head", method);
     this.getTestAuditDataStore().auditDataMap.forEach(
@@ -214,7 +211,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("HEAD", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -227,7 +223,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
     Response response = externalServiceClient.headUserWithQuery("txn123");
     String transactionId = response.headers().get("TRANSACTION_ID").iterator().next();
     assertEquals("txn456", transactionId);
-
     String method = response.headers().get("method").iterator().next();
     assertEquals("head", method);
     this.getTestAuditDataStore().auditDataMap.forEach(
@@ -237,7 +232,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("HEAD", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -250,7 +244,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
     Response response = externalServiceClient.headUserWithPathParam("txn123");
     String transactionId = response.headers().get("TRANSACTION_ID").iterator().next();
     assertEquals("txn789", transactionId);
-
     String method = response.headers().get("method").iterator().next();
     assertEquals("head", method);
     this.getTestAuditDataStore().auditDataMap.forEach(
@@ -260,7 +253,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("HEAD", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -280,7 +272,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("POST", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -299,7 +290,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("POST", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -312,7 +302,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
     Response response = externalServiceClient.postUserWithHeader("txn123");
     String transactionId = response.headers().get("TRANSACTION_ID").iterator().next();
     assertEquals("txn123", transactionId);
-
     String method = response.headers().get("method").iterator().next();
     assertEquals("head", method);
     this.getTestAuditDataStore().auditDataMap.forEach(
@@ -322,7 +311,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("POST", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -335,7 +323,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
     Response response = externalServiceClient.postUserWithQuery("txn123");
     String transactionId = response.headers().get("TRANSACTION_ID").iterator().next();
     assertEquals("txn456", transactionId);
-
     String method = response.headers().get("method").iterator().next();
     assertEquals("head", method);
     this.getTestAuditDataStore().auditDataMap.forEach(
@@ -358,7 +345,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
     Response response = externalServiceClient.postUserWithPathParam("txn123");
     String transactionId = response.headers().get("TRANSACTION_ID").iterator().next();
     assertEquals("txn789", transactionId);
-
     String method = response.headers().get("method").iterator().next();
     assertEquals("head", method);
     this.getTestAuditDataStore().auditDataMap.forEach(
@@ -388,7 +374,6 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
             assertNull(val.getErrorBody());
             assertNotNull(val.getResponseData());
             assertEquals("POST", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -397,21 +382,18 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
 
   @Test
   @Order(18)
-  void TestErrorWithGet() {
-    Exception exception = assertThrows(Exception.class, () -> {
+  void TestErrorWithGet4xx() {
+    FeignException exception = assertThrows(FeignException.class, () -> {
       externalServiceClient.getError4xx(); // Simulate the API call
     });
-
-    assertEquals(401, ((ApiException) exception).getStatusCode());
-    assertTrue(exception.getMessage().contains("Unauthorized access"));
-
+    assertEquals(401, exception.status());
+    assertTrue(exception.contentUTF8().contains("Unauthorized access"));
     this.getTestAuditDataStore().auditDataMap.forEach(
         (key, val) -> {
           try {
             assertEquals(401, val.getStatusCode());
             assertEquals("{\"error\":\"Unauthorized access\", \"code\":401}", val.getErrorBody());
             assertEquals("GET", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -420,21 +402,18 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
 
   @Test
   @Order(19)
-  void TestErrorWithPOST() {
-    Exception exception = assertThrows(Exception.class, () -> {
+  void TestErrorWithPOST4xx() {
+    FeignException exception = assertThrows(FeignException.class, () -> {
       externalServiceClient.postError4xx(); // Simulate the API call
     });
-
-    assertEquals(401, ((ApiException) exception).getStatusCode());
-    assertTrue(exception.getMessage().contains("Unauthorized access"));
-
+    assertEquals(401, exception.status());
+    assertTrue(exception.contentUTF8().contains("Unauthorized access"));
     this.getTestAuditDataStore().auditDataMap.forEach(
         (key, val) -> {
           try {
             assertEquals(401, val.getStatusCode());
             assertEquals("{\"error\":\"Unauthorized access\", \"code\":401}", val.getErrorBody());
             assertEquals("POST", val.getMethod());
-
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
@@ -442,21 +421,139 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
   }
 
   @Test
-  @Order(18)
+  @Order(20)
   void TestErrorWithGET5xx() {
-    Exception exception = assertThrows(Exception.class, () -> {
+    FeignException exception = assertThrows(FeignException.class, () -> {
       externalServiceClient.getError5xx(); // Simulate the API call
     });
-
-    assertEquals(501, ((ApiException) exception).getStatusCode());
-    assertTrue(exception.getMessage().contains("Server Down"));
-
+    assertEquals(501, exception.status());
+    assertTrue(exception.contentUTF8().contains("Server Down"));
     this.getTestAuditDataStore().auditDataMap.forEach(
         (key, val) -> {
           try {
             assertEquals(501, val.getStatusCode());
             assertEquals("{\"error\":\"Server Down\", \"code\":501}", val.getErrorBody());
             assertEquals("GET", val.getMethod());
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Test
+  @Order(21)
+  void TestErrorWithPOST5xx() {
+    FeignException exception = assertThrows(FeignException.class, () -> {
+      externalServiceClient.postError5xx(); // Simulate the API call
+    });
+    assertEquals(501, exception.status());
+    assertTrue(exception.contentUTF8().contains("Server Down"));
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(501, val.getStatusCode());
+            assertEquals("{\"error\":\"Server Down\", \"code\":501}", val.getErrorBody());
+            assertEquals("POST", val.getMethod());
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Test
+  @Order(22)
+  void TestErrorWithPOST5xxWithBody() {
+    FeignException exception = assertThrows(FeignException.class, () -> {
+      externalServiceClient.postError5xxWithBody(
+          new PostUserBody("txn123", "post")); // Simulate the API call
+    });
+    assertEquals(501, exception.status());
+    assertTrue(exception.contentUTF8().contains("Server Down"));
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(501, val.getStatusCode());
+            assertEquals("{\"error\":\"Server Down\", \"code\":501}", val.getErrorBody());
+            assertEquals("POST", val.getMethod());
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Test
+  @Order(23)
+  void TestPUTUserWithBody() {
+    Response response = externalServiceClient.putUserWithBody(
+        new PostUserBody("txn123", "put"));
+    assertEquals(200, response.status());
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(200, val.getStatusCode());
+            assertNull(val.getErrorBody());
+            assertNotNull(val.getResponseData());
+            assertEquals("PUT", val.getMethod());
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Test
+  @Order(24)
+  void TestPUTUser() {
+    Response response = externalServiceClient.putUser();
+    assertEquals(200, response.status());
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(200, val.getStatusCode());
+            assertNull(val.getErrorBody());
+            assertNotNull(val.getResponseData());
+            assertEquals("PUT", val.getMethod());
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Test
+  @Order(25)
+  void TestPUTUserWithHeader() {
+    Response response = externalServiceClient.putUserWithHeader("txn123");
+    String transactionId = response.headers().get("TRANSACTION_ID").iterator().next();
+    assertEquals("txn123", transactionId);
+    String method = response.headers().get("method").iterator().next();
+    assertEquals("put", method);
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(200, val.getStatusCode());
+            assertNull(val.getErrorBody());
+            assertNotNull(val.getResponseData());
+            assertEquals("PUT", val.getMethod());
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Test
+  @Order(26)
+  void TestPUTUserWithQueryParam() {
+    Response response = externalServiceClient.putUserWithQuery("txn123");
+    String transactionId = response.headers().get("TRANSACTION_ID").iterator().next();
+    assertEquals("txn456", transactionId);
+    String method = response.headers().get("method").iterator().next();
+    assertEquals("put", method);
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(200, val.getStatusCode());
+            assertNull(val.getErrorBody());
+            assertNotNull(val.getResponseData());
+            assertEquals("PUT", val.getMethod());
 
           } catch (Exception e) {
             throw new RuntimeException(e);
@@ -465,25 +562,44 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
   }
 
   @Test
-  @Order(18)
-  void TestErrorWithPOST5xx() {
-    Exception exception = assertThrows(Exception.class, () -> {
-      externalServiceClient.postError5xx(); // Simulate the API call
-    });
-
-    assertEquals(501, ((ApiException) exception).getStatusCode());
-    assertTrue(exception.getMessage().contains("Server Down"));
-
+  @Order(27)
+  void TestPUTUserWithPathParam() {
+    Response response = externalServiceClient.putUserWithPathParam("txn123");
+    String transactionId = response.headers().get("TRANSACTION_ID").iterator().next();
+    assertEquals("txn789", transactionId);
+    String method = response.headers().get("method").iterator().next();
+    assertEquals("put", method);
     this.getTestAuditDataStore().auditDataMap.forEach(
         (key, val) -> {
           try {
-            assertEquals(501, val.getStatusCode());
-            assertEquals("{\"error\":\"Server Down\", \"code\":501}", val.getErrorBody());
-            assertEquals("POST", val.getMethod());
+            assertEquals(200, val.getStatusCode());
+            assertNull(val.getErrorBody());
+            assertNotNull(val.getResponseData());
+            assertEquals("PUT", val.getMethod());
 
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
         });
   }
+
+  @Test
+  @Order(28)
+  void TestPUTUserWithBodyWithoutResponseType() {
+    PostUserBody response = externalServiceClient.putUserWithBodyWithoutResponseType(
+        new PostUserBody("txn123", "put"));
+    assertEquals("txn123", response.getTransactionId());
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(200, val.getStatusCode());
+            assertNull(val.getErrorBody());
+            assertNotNull(val.getResponseData());
+            assertEquals("PUT", val.getMethod());
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
 }

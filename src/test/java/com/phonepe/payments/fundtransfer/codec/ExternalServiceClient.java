@@ -4,7 +4,6 @@ import com.phonepe.payments.fundtransfer.codec.model.DeleteHeader;
 import com.phonepe.payments.fundtransfer.codec.model.DeletePath;
 import com.phonepe.payments.fundtransfer.codec.model.DeleteQuery;
 import com.phonepe.payments.fundtransfer.codec.model.DeleteUser;
-import com.phonepe.payments.fundtransfer.codec.model.GenericError;
 import com.phonepe.payments.fundtransfer.codec.model.GetHeader;
 import com.phonepe.payments.fundtransfer.codec.model.GetPath;
 import com.phonepe.payments.fundtransfer.codec.model.GetQuery;
@@ -76,14 +75,36 @@ public interface ExternalServiceClient {
   PostUserBody postUserWithBodyWithoutResponseType(PostUserBody postUserBody);
 
   @RequestLine("GET /api/error/4xx")
-  GenericError getError4xx();
+  void getError4xx();
 
   @RequestLine("POST /api/error/4xx")
-  GenericError postError4xx();
-
+  void postError4xx();
+  
   @RequestLine("GET /api/error/5xx")
-  GenericError getError5xx();
+  void getError5xx();
 
   @RequestLine("POST /api/error/5xx")
-  GenericError postError5xx();
+  void postError5xx();
+
+  @RequestLine("POST /api/error/5xx/body")
+  void postError5xxWithBody(PostUserBody postUserBody);
+
+  @RequestLine("PUT /api/users")
+  Response putUser();
+
+  @RequestLine("PUT /api/users/body")
+  Response putUserWithBody(PostUserBody postUserBody);
+
+  @RequestLine("PUT /api/users/header")
+  @Headers({"TRANSACTION_ID: {transactionId}"})
+  Response putUserWithHeader(@Param("transactionId") String transactionId);
+
+  @RequestLine("PUT /api/users/param?transactionId={transactionId}")
+  Response putUserWithQuery(@Param("transactionId") String transactionId);
+
+  @RequestLine("PUT /api/users/path/{transactionId}")
+  Response putUserWithPathParam(@Param("transactionId") String userId);
+
+  @RequestLine("PUT /api/users/body/without/response/type")
+  PostUserBody putUserWithBodyWithoutResponseType(PostUserBody postUserBody);
 }

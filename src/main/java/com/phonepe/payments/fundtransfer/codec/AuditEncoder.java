@@ -13,23 +13,23 @@ public abstract class AuditEncoder<A extends AuditContext> implements Encoder {
 
   private final ObjectMapper objectMapper;
   private final RequestContextManager<A> requestContextManager;
-  private final Encoder encoder;
+  private final Encoder delegate;
   private final TransformerManager transformerManager;
 
   protected AuditEncoder(ObjectMapper objectMapper, RequestContextManager<A> requestContextManager,
-      Encoder encoder, ArrayList<Transformer> transformers) {
+      Encoder delegate, ArrayList<Transformer> transformers) {
     this.objectMapper = objectMapper;
     this.requestContextManager = requestContextManager;
-    this.encoder = encoder;
+    this.delegate = delegate;
     transformerManager = new TransformerManager();
     transformers.forEach(this.transformerManager::addRequestTransformer);
   }
 
   // No transformer
   protected AuditEncoder(ObjectMapper objectMapper, RequestContextManager<A> requestContextManager,
-      Encoder encoder) {
+      Encoder delegate) {
     // Calls primary constructor
-    this(objectMapper, requestContextManager, encoder, new ArrayList<>());
+    this(objectMapper, requestContextManager, delegate, new ArrayList<>());
   }
 
 
@@ -48,7 +48,7 @@ public abstract class AuditEncoder<A extends AuditContext> implements Encoder {
       // Encode the request
       var transformedType = this.objectMapper.getTypeFactory()
           .findClass(transformedObject.getClass().getName());
-      encoder.encode(transformedObject, transformedType, template);
+      delegate.encode(transformedObject, transformedType, template);
     } catch (ClassNotFoundException e) {
       throw new CodecException("Failed to encode the audit request", e);
     }

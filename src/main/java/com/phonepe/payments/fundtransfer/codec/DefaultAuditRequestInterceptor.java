@@ -15,7 +15,7 @@ public class DefaultAuditRequestInterceptor extends AuditRequestInterceptor<Defa
     context.setId(this.getRequestContextManager().getContext().getId());
     context.setUrl(template.url());
     context.setHeaders(template.headers());
-    context.setQueryParams(template.queryLine());
+    context.setQueryParams(template.queries());
     context.setMethod(template.method());
     return context;
   }

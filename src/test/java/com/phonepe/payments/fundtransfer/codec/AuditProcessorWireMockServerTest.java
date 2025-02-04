@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.head;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
@@ -31,11 +32,11 @@ public abstract class AuditProcessorWireMockServerTest {
     WireMock.configureFor("localhost", 3000);
 
 //    /*
-    // For debugging the incoming request
-    wireMockServer.addMockServiceRequestListener((request, response) -> {
-      System.out.println("Received request with headers: " + request);
-      System.out.println("TRANSACTION_ID: " + request.getHeader("TRANSACTION_ID"));
-    });
+//    // For debugging the incoming request
+//    wireMockServer.addMockServiceRequestListener((request, response) -> {
+//      System.out.println("Received request with headers: " + request);
+//      System.out.println("TRANSACTION_ID: " + request.getHeader("TRANSACTION_ID"));
+//    });
 //     */
 
     // Setup mock endpoints
@@ -43,7 +44,7 @@ public abstract class AuditProcessorWireMockServerTest {
     setupDeleteMock();
     setupHeadMock();
     setupPostMock();
-//    setupPutMock();
+    setupPutMock();
     setupErrorScenarios();
   }
 
@@ -193,7 +194,7 @@ public abstract class AuditProcessorWireMockServerTest {
             .withBody(
                 "{\"transactionId\":\"txn123\", \"method\":\"post\"}")));
 
-//    // with only query param
+    // with only query param
     stubFor(post(urlPathEqualTo("/api/users/param"))
         .withQueryParam("transactionId", equalTo("txn123"))
         .willReturn(aResponse()
@@ -254,5 +255,79 @@ public abstract class AuditProcessorWireMockServerTest {
             .withHeader("Content-Type", "application/json")
             .withBody("{\"error\":\"Server Down\", \"code\":501}")
         ));
+
+    stubFor(post(urlPathEqualTo("/api/error/5xx/body"))
+        .withRequestBody(equalToJson("{\"transactionId\":\"txn123\", \"method\":\"post\"}"))
+        .willReturn(aResponse()
+            .withStatus(501)  // Unauthorized error
+            .withHeader("Content-Type", "application/json")
+            .withBody("{\"error\":\"Server Down\", \"code\":501}")
+        ));
   }
+
+  void setupPutMock() {
+    stubFor(put(urlPathEqualTo("/api/users"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn123")
+            .withHeader("method", "put")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"put\"}")));
+
+    // With request body
+    stubFor(put(urlPathEqualTo("/api/users/body"))
+        .withRequestBody(equalToJson("{\"transactionId\":\"txn123\", \"method\":\"put\"}"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn123")
+            .withHeader("method", "put")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"put\"}")));
+
+    // with only header
+    stubFor(put(urlPathEqualTo("/api/users/header"))
+        .withHeader("TRANSACTION_ID", equalTo("txn123"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn123")
+            .withHeader("method", "put")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"put\"}")));
+
+    // with only query param
+    stubFor(put(urlPathEqualTo("/api/users/param"))
+        .withQueryParam("transactionId", equalTo("txn123"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn456")
+            .withHeader("method", "put")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"put\"}")));
+
+    // with only path param
+    stubFor(put(urlPathMatching("/api/users/path/([a-zA-Z0-9]+)"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn789")
+            .withHeader("method", "put")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"put\"}")));
+
+    // with only path param
+    stubFor(put(urlPathMatching("/api/users/body/without/response/type"))
+        .withRequestBody(equalToJson("{\"transactionId\":\"txn123\", \"method\":\"put\"}"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn789")
+            .withHeader("method", "put")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"put\"}")));
+  }
+
 }

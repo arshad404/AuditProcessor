@@ -7,9 +7,12 @@ import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import lombok.Getter;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.MDC;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 @Getter
-public class BaseAuditProcessorTest extends AuditProcessorWireMockServerTest {
+public abstract class BaseAuditProcessorTest extends AuditProcessorWireMockServerTest {
 
   protected TestAuditDataStore testAuditDataStore;
   protected ExternalServiceClient externalServiceClient;
@@ -23,6 +26,10 @@ public class BaseAuditProcessorTest extends AuditProcessorWireMockServerTest {
     testAuditDataStore = new TestAuditDataStore();
     defaultAuditErrorDecoder = new DefaultAuditErrorDecoder(defaultRequestContextManager,
         testAuditDataStore);
+  }
+
+  @BeforeEach
+  protected void setupClient() {
     try {
       externalServiceClient = Feign.builder()
           .requestInterceptor(new DefaultAuditRequestInterceptor(defaultRequestContextManager))
@@ -38,5 +45,11 @@ public class BaseAuditProcessorTest extends AuditProcessorWireMockServerTest {
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialise the Feign client ", e);
     }
+  }
+
+  @AfterEach
+  protected void tearDown() {
+    testAuditDataStore.auditDataMap.clear();
+    MDC.clear();
   }
 }

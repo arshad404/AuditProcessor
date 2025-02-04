@@ -1,6 +1,7 @@
 package com.phonepe.payments.fundtransfer.codec;
 
-import java.util.Arrays;
+import static java.util.Objects.nonNull;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -19,7 +20,7 @@ public class DefaultAuditContext implements AuditContext {
   private String method;
   private Map<String, Collection<String>> headers;
   private String url;
-  private String queryParams;
+  private Map<String, Collection<String>> queryParams;
 
   // Encoder
   private byte[] requestData;
@@ -40,27 +41,34 @@ public class DefaultAuditContext implements AuditContext {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-
     sb.append("ID: ").append(id).append("\n");
-
     // Request Interceptor
     sb.append("Method: ").append(method).append("\n");
-    sb.append("Headers: ").append(headers).append("\n");
+    if (!headers.isEmpty()) {
+      sb.append("Headers: ").append(headers).append("\n");
+    }
     sb.append("URL: ").append(url).append("\n");
-    sb.append("Query Params: ").append(queryParams).append("\n");
-
-    // Encoder
-    sb.append("Request Data (byte array): ").append(Arrays.toString(requestData)).append("\n");
-
-    // Decoder
-    sb.append("Response Data (byte array): ").append(Arrays.toString(responseData)).append("\n");
-
+    if (!queryParams.isEmpty()) {
+      sb.append("Query Params: ").append(queryParams).append("\n");
+    }
+    if (nonNull(requestData) && requestData.length > 0) {
+      sb.append("Request Data (byte array as String): ")
+          .append(new String(requestData))
+          .append("\n");
+    }
+    if (nonNull(responseData) && responseData.length > 0) {
+      sb.append("Response Data (byte array as String): ")
+          .append(new String(responseData))
+          .append("\n");
+    }
     // Response Interceptor
     sb.append("Status Code: ").append(statusCode).append("\n");
     sb.append("Reason: ").append(reason).append("\n");
-    sb.append("Error Body: ").append(errorBody).append("\n");
-
+    if (nonNull(errorBody) && !errorBody.isEmpty()) {
+      sb.append("Error Body: ")
+          .append(errorBody)
+          .append("\n");
+    }
     return sb.toString();
   }
-
 }

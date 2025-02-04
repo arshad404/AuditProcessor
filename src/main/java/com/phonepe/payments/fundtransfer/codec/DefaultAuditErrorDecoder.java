@@ -1,13 +1,14 @@
 package com.phonepe.payments.fundtransfer.codec;
 
 import feign.Response;
+import feign.codec.ErrorDecoder;
 
 public class DefaultAuditErrorDecoder extends AuditErrorDecoder<DefaultAuditContext> {
 
   protected DefaultAuditErrorDecoder(
       RequestContextManager<DefaultAuditContext> requestContextManager,
       AuditDataStore<DefaultAuditContext> auditDataStore) {
-    super(requestContextManager, auditDataStore);
+    super(requestContextManager, auditDataStore, new ErrorDecoder.Default());
   }
 
   @Override
