@@ -1,4 +1,4 @@
-package com.phonepe.payments.fundtransfer.codec_new;
+package com.phonepe.payments.fundtransfer.codec;
 
 import feign.RequestTemplate;
 import feign.Response;

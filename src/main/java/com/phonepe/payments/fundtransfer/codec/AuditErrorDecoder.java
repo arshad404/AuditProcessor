@@ -1,35 +1,53 @@
 package com.phonepe.payments.fundtransfer.codec;
 
-import com.phonepe.payments.fundtransfer.exceptions.AuditRequestContextException;
-import com.phonepe.payments.fundtransfer.exceptions.FiveXXErrorDecoderException;
-import com.phonepe.payments.fundtransfer.exceptions.FourXXErrorDecoderException;
 import feign.Response;
+import feign.Util;
 import feign.codec.ErrorDecoder;
+import java.io.IOException;
+import lombok.Getter;
 
-public class AuditErrorDecoder<A extends AuditContext> implements ErrorDecoder {
+@Getter
+public abstract class AuditErrorDecoder<A extends AuditContext> implements ErrorDecoder {
 
-  private final AuditContextStore<A> auditContextStore;
-  private final AuditDataStore<A> dataStore;
+  private final RequestContextManager<A> requestContextManager;
+  private final AuditDataStore<A> auditDataStore;
 
-  public AuditErrorDecoder(AuditContextStore<A> auditContextStore, AuditDataStore<A> dataStore) {
-    this.auditContextStore = auditContextStore;
-    this.dataStore = dataStore;
+  protected AuditErrorDecoder(RequestContextManager<A> requestContextManager,
+      AuditDataStore<A> auditDataStore) {
+    this.requestContextManager = requestContextManager;
+    this.auditDataStore = auditDataStore;
   }
 
   @Override
   public Exception decode(String methodKey, Response response) {
+    // Extract response details for exception message
+    int statusCode = response.status();
+    String reason = response.reason();
+    String responseBody = null;
+
     try {
-      var message = auditContextStore.setAuditContext(methodKey, response);
-      dataStore.saveAuditData(auditContextStore.getAuditContext());
-      if (response.status() >= 400 && response.status() < 500) {
-        return new FourXXErrorDecoderException(message);
-      } else if (response.status() >= 500) {
-        return new FiveXXErrorDecoderException(message);
-      } else {
-        return new Exception(message);
+      if (response.body() != null) {
+        responseBody = Util.toString(response.body().asReader());
       }
-    } catch (AuditRequestContextException e) {
-      throw new RuntimeException(e);
+    } catch (IOException e) {
+      responseBody = "Failed to read response body";
     }
+
+    // Construct and return a custom exception
+    var apiException = new ApiException(
+        methodKey,
+        statusCode,
+        reason,
+        response.headers(),
+        responseBody
+    );
+
+    var updatedContext = this.setAuditContext(methodKey, response, responseBody);
+    this.requestContextManager.setContext(updatedContext);
+    this.auditDataStore.saveAuditData(this.requestContextManager.getContext());
+
+    return apiException;
   }
+
+  protected abstract A setAuditContext(String methodKey, Response response, String errorBody);
 }

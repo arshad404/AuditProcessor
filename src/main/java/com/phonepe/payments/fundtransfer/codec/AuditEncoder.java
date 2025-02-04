@@ -1,44 +1,61 @@
 package com.phonepe.payments.fundtransfer.codec;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phonepe.payments.fundtransfer.exceptions.AuditEncoderException;
-import com.phonepe.payments.fundtransfer.exceptions.AuditRequestContextException;
 import feign.RequestTemplate;
 import feign.codec.EncodeException;
 import feign.codec.Encoder;
-import feign.jackson.JacksonEncoder;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import lombok.Getter;
 
+@Getter
 public abstract class AuditEncoder<A extends AuditContext> implements Encoder {
 
-  private final AuditContextStore<A> auditContextStore;
-  private final Transformer transformer;
-  private final Encoder encoder;
   private final ObjectMapper objectMapper;
+  private final RequestContextManager<A> requestContextManager;
+  private final Encoder encoder;
+  private final TransformerManager transformerManager;
 
-  protected AuditEncoder(ObjectMapper objectMapper, AuditContextStore<A> auditContextStore,
-      Transformer transformer, Encoder encoder) throws AuditRequestContextException {
-    if(auditContextStore == null) {
-      throw new AuditRequestContextException("AuditContextStore is not provided in AuditEncoder");
-    }
-    this.objectMapper = objectMapper != null ? objectMapper : new ObjectMapper();
-    this.auditContextStore = auditContextStore;
-    this.transformer = transformer != null ? transformer : new NoopTransformer();
-    this.encoder = encoder != null ? encoder : new JacksonEncoder(this.objectMapper);
+  protected AuditEncoder(ObjectMapper objectMapper, RequestContextManager<A> requestContextManager,
+      Encoder encoder, ArrayList<Transformer> transformers) {
+    this.objectMapper = objectMapper;
+    this.requestContextManager = requestContextManager;
+    this.encoder = encoder;
+    transformerManager = new TransformerManager();
+    transformers.forEach(this.transformerManager::addRequestTransformer);
   }
 
+  // No transformer
+  protected AuditEncoder(ObjectMapper objectMapper, RequestContextManager<A> requestContextManager,
+      Encoder encoder) {
+    // Calls primary constructor
+    this(objectMapper, requestContextManager, encoder, new ArrayList<>());
+  }
+
+
   @Override
-  public void encode(Object object, Type bodyType, RequestTemplate template) throws EncodeException {
+  public void encode(Object object, Type bodyType, RequestTemplate template)
+      throws EncodeException {
     try {
-      auditContextStore.setAuditContext(object, bodyType, template);
-      var transformedObject  = transformer.transformRequest(object, bodyType, template);
-      //Get type of transformed object and then pass that to the delegated encoder
+      // Transform
+      var transformedObject = this.transformerManager.applyRequestTransformers(object, bodyType,
+          template);
+
+      // Update the context
+      A auditContext = setAuditContext(object, transformedObject, bodyType, template);
+      requestContextManager.setContext(auditContext);
+
+      // Encode the request
       var transformedType = this.objectMapper.getTypeFactory()
           .findClass(transformedObject.getClass().getName());
       encoder.encode(transformedObject, transformedType, template);
-    } catch (AuditRequestContextException | ClassNotFoundException e) {
-      throw new AuditEncoderException("exception while encoding while auditing", e);
+    } catch (ClassNotFoundException e) {
+      throw new CodecException("Failed to encode the audit request", e);
     }
-  }
-}
 
+  }
+
+  // dev can store the real object or the transformed object
+  protected abstract A setAuditContext(Object object, Object transformedObject, Type bodyType,
+      RequestTemplate template);
+}

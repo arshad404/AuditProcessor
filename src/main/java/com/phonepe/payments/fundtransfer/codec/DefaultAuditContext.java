@@ -1,61 +1,66 @@
 package com.phonepe.payments.fundtransfer.codec;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.lang.reflect.Type;
-import java.util.Base64;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import lombok.AllArgsConstructor;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.SneakyThrows;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Getter
 @Setter
+@Builder
 public class DefaultAuditContext implements AuditContext {
 
   private String id;
-  private String requestData;
-  private String type;
-  private String method;
-  private String url;
-  private Object requestObject;
-  private Map<String, Collection<String>> headers;
 
-  private String responseData;
+  // Request Interceptor
+  private String method;
+  private Map<String, Collection<String>> headers;
+  private String url;
+  private String queryParams;
+
+  // Encoder
+  private byte[] requestData;
+
+  // Decoder
+  private byte[] responseData;
+
+  // Response Interceptor
   private int statusCode;
   private String reason;
-
-  public void setRequestDataFromByte(byte[] data) {
-    this.requestData = Base64.getEncoder().encodeToString(data);
-  }
-
-  public void setTypeFromType(Type type) {
-    this.type = type.getTypeName();
-  }
-
-  @JsonIgnore
-  public byte[] getRequestDataFromByte() {
-    return Base64.getDecoder().decode(requestData);
-  }
-
-  @JsonIgnore
-  @SneakyThrows
-  public Type getTypeFromType() {
-    return Class.forName(this.type);
-  }
+  private String errorBody;
 
   @Override
   public String getId() {
-    return "DefaultAuditContextKey";
+    return UUID.randomUUID().toString();
   }
 
-  public static DefaultAuditContext getDefaultAuditContext() {
-    return new DefaultAuditContext();
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("ID: ").append(id).append("\n");
+
+    // Request Interceptor
+    sb.append("Method: ").append(method).append("\n");
+    sb.append("Headers: ").append(headers).append("\n");
+    sb.append("URL: ").append(url).append("\n");
+    sb.append("Query Params: ").append(queryParams).append("\n");
+
+    // Encoder
+    sb.append("Request Data (byte array): ").append(Arrays.toString(requestData)).append("\n");
+
+    // Decoder
+    sb.append("Response Data (byte array): ").append(Arrays.toString(responseData)).append("\n");
+
+    // Response Interceptor
+    sb.append("Status Code: ").append(statusCode).append("\n");
+    sb.append("Reason: ").append(reason).append("\n");
+    sb.append("Error Body: ").append(errorBody).append("\n");
+
+    return sb.toString();
   }
+
 }

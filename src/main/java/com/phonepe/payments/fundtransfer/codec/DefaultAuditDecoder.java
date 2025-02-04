@@ -1,15 +1,28 @@
 package com.phonepe.payments.fundtransfer.codec;
 
-import com.phonepe.payments.fundtransfer.exceptions.AuditRequestContextException;
-import com.phonepe.payments.fundtransfer.exceptions.DataStoreException;
-import lombok.Builder;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.Response;
+import feign.codec.Decoder;
+import java.lang.reflect.Type;
 
 public class DefaultAuditDecoder extends AuditDecoder<DefaultAuditContext> {
 
-  @Builder
-  public DefaultAuditDecoder(AuditContextStore<DefaultAuditContext> auditContextStore, NoopTransformer transformer,
-      NoopAuditDataStore dataStore) throws AuditRequestContextException, DataStoreException {
-    super(auditContextStore, transformer, dataStore);
+  public DefaultAuditDecoder(DefaultRequestContextManager defaultRequestContextManager,
+      Decoder decoder,
+      AuditDataStore<DefaultAuditContext> auditDataStore, ObjectMapper objectMapper) {
+    super(defaultRequestContextManager, decoder, auditDataStore, objectMapper);
+  }
+
+  @Override
+  protected DefaultAuditContext setAuditContext(Response response, Type type,
+      Object decodedObject) {
+    try {
+      var context = this.getRequestContextManager().getContext();
+      context.setResponseData(this.getObjectMapper().writeValueAsBytes(decodedObject));
+      return context;
+    } catch (JsonProcessingException e) {
+      throw new CodecException("failed to set the audit context in default audit encoder", e);
+    }
   }
 }

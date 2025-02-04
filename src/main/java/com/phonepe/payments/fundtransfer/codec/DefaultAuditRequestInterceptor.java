@@ -1,4 +1,4 @@
-package com.phonepe.payments.fundtransfer.codec_new;
+package com.phonepe.payments.fundtransfer.codec;
 
 import feign.RequestTemplate;
 
@@ -12,6 +12,7 @@ public class DefaultAuditRequestInterceptor extends AuditRequestInterceptor<Defa
   @Override
   protected DefaultAuditContext setAuditContext(RequestTemplate template) {
     var context = this.getRequestContextManager().getContext();
+    context.setId(this.getRequestContextManager().getContext().getId());
     context.setUrl(template.url());
     context.setHeaders(template.headers());
     context.setQueryParams(template.queryLine());

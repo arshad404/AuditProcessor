@@ -1,7 +1,6 @@
-package com.phonepe.payments.fundtransfer.codec_new;
+package com.phonepe.payments.fundtransfer.codec;
 
 import feign.Logger;
-import feign.Request;
 import feign.Response;
 import java.io.IOException;
 
@@ -10,7 +9,7 @@ public abstract class AuditResponseLogger<T extends AuditContext> extends Logger
   private final RequestContextManager<T> requestContextManager;
   private final AuditDataStore<T> auditDataStore;
 
-  public AuditResponseLogger(RequestContextManager<T> requestContextManager,
+  protected AuditResponseLogger(RequestContextManager<T> requestContextManager,
       AuditDataStore<T> auditDataStore) {
     this.requestContextManager = requestContextManager;
     this.auditDataStore = auditDataStore;
@@ -18,28 +17,27 @@ public abstract class AuditResponseLogger<T extends AuditContext> extends Logger
 
   @Override
   protected void log(String configKey, String format, Object... args) {
-    // Implementing the spicific methods
-    System.out.println();
+    // Implementing the specific methods
   }
 
-  @Override
-  protected void logRequest(String configKey, Level logLevel, Request request) {
-    super.logRequest(configKey, logLevel, request);
-  }
 
   @Override
   protected Response logAndRebufferResponse(String configKey, Level logLevel, Response response,
       long elapsedTime) throws IOException {
 
+    Boolean isDecoderSkipped = Utils.isDecoderSkipped(configKey);
+
     var context = requestContextManager.getContext();
-    this.updateAuditContext(context, response);
+    this.updateAuditContext(context, response, isDecoderSkipped);
     this.requestContextManager.setContext(context);
 
-    // save the data in the response
-    auditDataStore.saveAuditData(this.requestContextManager.getContext());
+    if (Boolean.TRUE.equals(isDecoderSkipped)) {
+      auditDataStore.saveAuditData(this.requestContextManager.getContext());
+    }
 
     return super.logAndRebufferResponse(configKey, logLevel, response, elapsedTime);
   }
 
-  protected abstract void updateAuditContext(T auditContext, Response response);
+  protected abstract void updateAuditContext(T auditContext, Response response,
+      Boolean isDecoderSkipped);
 }

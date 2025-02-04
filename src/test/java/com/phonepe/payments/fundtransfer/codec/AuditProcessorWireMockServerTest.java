@@ -30,21 +30,21 @@ public abstract class AuditProcessorWireMockServerTest {
     wireMockServer.start();
     WireMock.configureFor("localhost", 3000);
 
-    /*
+//    /*
     // For debugging the incoming request
     wireMockServer.addMockServiceRequestListener((request, response) -> {
       System.out.println("Received request with headers: " + request);
       System.out.println("TRANSACTION_ID: " + request.getHeader("TRANSACTION_ID"));
     });
-     */
+//     */
 
     // Setup mock endpoints
     setupGetMock();
     setupDeleteMock();
     setupHeadMock();
-//    setupPostMock();
+    setupPostMock();
 //    setupPutMock();
-//    setupErrorScenarios();
+    setupErrorScenarios();
   }
 
   @AfterAll
@@ -85,7 +85,7 @@ public abstract class AuditProcessorWireMockServerTest {
             .withStatus(200)
             .withHeader("Content-Type", "application/json")
             .withBody(
-                "{\"path\":\"response_with_path_param\",\"transactionId\":\"txn123\"},\"method\":\"get\"")));
+                "{\"path\":\"response_with_path_param\",\"transactionId\":\"txn123\",\"method\":\"get\"}")));
   }
 
   void setupDeleteMock() {
@@ -159,7 +159,19 @@ public abstract class AuditProcessorWireMockServerTest {
             .withHeader("TRANSACTION_ID", "txn789")
             .withHeader("method", "head")));
 
-    // with only body and headers
+  }
+
+  void setupPostMock() {
+    stubFor(post(urlPathEqualTo("/api/users"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn123")
+            .withHeader("method", "head")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"post\"}")));
+
+    // With request body
     stubFor(post(urlPathEqualTo("/api/users/body"))
         .withRequestBody(equalToJson("{\"transactionId\":\"txn123\", \"method\":\"post\"}"))
         .willReturn(aResponse()
@@ -168,6 +180,58 @@ public abstract class AuditProcessorWireMockServerTest {
             .withHeader("TRANSACTION_ID", "txn123")
             .withHeader("method", "head")
             .withBody(
-                "{\"path\":\"response_with_path_param\",\"transactionId\":\"txn123\", \"method\":\"delete\"}")));
+                "{\"transactionId\":\"txn123\", \"method\":\"post\"}")));
+
+    // with only header
+    stubFor(post(urlPathEqualTo("/api/users/header"))
+        .withHeader("TRANSACTION_ID", equalTo("txn123"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn123")
+            .withHeader("method", "head")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"post\"}")));
+
+//    // with only query param
+    stubFor(post(urlPathEqualTo("/api/users/param"))
+        .withQueryParam("transactionId", equalTo("txn123"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn456")
+            .withHeader("method", "head")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"post\"}")));
+
+    // with only path param
+    stubFor(post(urlPathMatching("/api/users/path/([a-zA-Z0-9]+)"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn789")
+            .withHeader("method", "head")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"post\"}")));
+
+    // with only path param
+    stubFor(post(urlPathMatching("/api/users/body/without/response/type"))
+        .withRequestBody(equalToJson("{\"transactionId\":\"txn123\", \"method\":\"post\"}"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn789")
+            .withHeader("method", "head")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"post\"}")));
+  }
+
+  void setupErrorScenarios() {
+    stubFor(get(urlPathEqualTo("/api/error"))
+        .willReturn(aResponse()
+            .withStatus(401)  // Unauthorized error
+            .withHeader("Content-Type", "application/json")
+            .withBody("{\"error\":\"Unauthorized access\", \"code\":401}")
+        ));
   }
 }

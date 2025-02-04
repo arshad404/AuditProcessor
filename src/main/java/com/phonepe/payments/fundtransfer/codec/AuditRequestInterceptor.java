@@ -2,30 +2,23 @@ package com.phonepe.payments.fundtransfer.codec;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import java.util.Collection;
-import java.util.Map;
+import lombok.Getter;
 
-public abstract class AuditRequestInterceptor<A extends AuditContext> implements
+@Getter
+public abstract class AuditRequestInterceptor<T extends AuditContext> implements
     RequestInterceptor {
 
-  private final AuditContextStore<A> auditContextStore;
+  private final RequestContextManager<T> requestContextManager;
 
-  public AuditRequestInterceptor(AuditContextStore<A> auditContextStore) {
-    this.auditContextStore = auditContextStore;
+  protected AuditRequestInterceptor(RequestContextManager<T> requestContextManager) {
+    this.requestContextManager = requestContextManager;
   }
 
   @Override
   public void apply(RequestTemplate template) {
-    // Capture request headers, query params, method and URL
-    String url = template.url();
-    Map<String, Collection<String>> headers = template.headers();
-    String queryParams = template.queryLine();
-    String method = template.method();
-
-    auditContextStore.setAuditContext(template);
-
-    System.out.println(
-        "Captured Request: URL=" + url + ", Headers=" + headers + ", QueryParams=" + queryParams
-            + ", Method=" + method);
+    T auditContext = setAuditContext(template);
+    requestContextManager.setContext(auditContext);
   }
+
+  protected abstract T setAuditContext(RequestTemplate template);
 }

@@ -1,53 +1,40 @@
 package com.phonepe.payments.fundtransfer.codec;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phonepe.payments.fundtransfer.codec_new.CustomFeignClient;
-import com.phonepe.payments.fundtransfer.codec_new.DefaultAuditDecoder;
-import com.phonepe.payments.fundtransfer.codec_new.DefaultAuditEncoder;
-import com.phonepe.payments.fundtransfer.codec_new.DefaultAuditRequestInterceptor;
-import com.phonepe.payments.fundtransfer.codec_new.DefaultAuditResponseLogger;
-import com.phonepe.payments.fundtransfer.codec_new.DefaultRequestContextManager;
-import com.phonepe.payments.fundtransfer.codec_new.NoopAuditDataStore;
 import feign.Feign;
-import feign.Logger;
+import feign.Logger.Level;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import lombok.Getter;
 import org.apache.log4j.BasicConfigurator;
 
+@Getter
 public class BaseAuditProcessorTest extends AuditProcessorWireMockServerTest {
 
-  protected TestAuditContextStore testAuditContextStore;
-  protected DefaultContextStore defaultContextStore;
-  protected ExternalServiceClient externalServiceClient;
   protected TestAuditDataStore testAuditDataStore;
-  protected AuditRequestInterceptor auditRequestInterceptor;
-  DefaultRequestContextManager defaultRequestContextManager = new DefaultRequestContextManager();
+  protected ExternalServiceClient externalServiceClient;
+  protected DefaultRequestContextManager defaultRequestContextManager = new DefaultRequestContextManager();
+  protected DefaultAuditErrorDecoder defaultAuditErrorDecoder;
 
   BaseAuditProcessorTest() {
     BasicConfigurator.configure();
-    defaultContextStore = new DefaultContextStore(new ObjectMapper());
-    testAuditContextStore = new TestAuditContextStore(defaultContextStore);
+    CodecRegistry.configure(ExternalServiceClient.class);
+
     testAuditDataStore = new TestAuditDataStore();
-    auditRequestInterceptor = new TestAuditRequestInterceptor(testAuditContextStore);
+    defaultAuditErrorDecoder = new DefaultAuditErrorDecoder(defaultRequestContextManager,
+        testAuditDataStore);
     try {
       externalServiceClient = Feign.builder()
-          .client(new CustomFeignClient(defaultRequestContextManager))
           .requestInterceptor(new DefaultAuditRequestInterceptor(defaultRequestContextManager))
           .encoder(new DefaultAuditEncoder(defaultRequestContextManager, new JacksonEncoder(),
               new ObjectMapper()))
           .decoder(new DefaultAuditDecoder(defaultRequestContextManager, new JacksonDecoder(),
-              new NoopAuditDataStore(), new ObjectMapper()))
+              testAuditDataStore, new ObjectMapper()))
           .logger(new DefaultAuditResponseLogger(defaultRequestContextManager,
-              new NoopAuditDataStore()))
-          .addCapability()
-          .logLevel(Logger.Level.FULL) // Ensure FULL logging level is enabled
-//          .encoder(TestAuditEncoder.builder().auditContextStore(testAuditContextStore).build())
-//          .decoder(TestAuditDecoder.builder().auditContextStore(testAuditContextStore)
-//              .dataStore(testAuditDataStore).build())
-//          .requestInterceptor(auditRequestInterceptor)
-//          .errorDecoder(new TestAuditErrorDecoder(testAuditContextStore, testAuditDataStore))
-          .target(ExternalServiceClient.class, "http://localhost:3000")
-      ;
+              testAuditDataStore))
+          .errorDecoder(defaultAuditErrorDecoder)
+          .logLevel(Level.FULL)
+          .target(ExternalServiceClient.class, "http://localhost:3000");
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialise the Feign client ", e);
     }

@@ -4,6 +4,7 @@ import com.phonepe.payments.fundtransfer.codec.model.DeleteHeader;
 import com.phonepe.payments.fundtransfer.codec.model.DeletePath;
 import com.phonepe.payments.fundtransfer.codec.model.DeleteQuery;
 import com.phonepe.payments.fundtransfer.codec.model.DeleteUser;
+import com.phonepe.payments.fundtransfer.codec.model.GenericError;
 import com.phonepe.payments.fundtransfer.codec.model.GetHeader;
 import com.phonepe.payments.fundtransfer.codec.model.GetPath;
 import com.phonepe.payments.fundtransfer.codec.model.GetQuery;
@@ -26,8 +27,8 @@ public interface ExternalServiceClient {
   @RequestLine("GET /api/users/param?transactionId={transactionId}")
   GetQuery getUserWithQuery(@Param("transactionId") String transactionId);
 
-  @RequestLine("GET /api/users/path/{userId}")
-  GetPath getUserWithPathParam(@Param("userId") String userId);
+  @RequestLine("GET /api/users/path/{transactionId}")
+  GetPath getUserWithPathParam(@Param("transactionId") String userId);
 
   @RequestLine("DELETE /api/users")
   DeleteUser deleteUsers();
@@ -39,8 +40,8 @@ public interface ExternalServiceClient {
   @RequestLine("DELETE /api/users/param?transactionId={transactionId}")
   DeleteQuery deleteUserWithQuery(@Param("transactionId") String transactionId);
 
-  @RequestLine("DELETE /api/users/path/{userId}")
-  DeletePath deleteUserWithPathParam(@Param("userId") String userId);
+  @RequestLine("DELETE /api/users/path/{transactionId}")
+  DeletePath deleteUserWithPathParam(@Param("transactionId") String userId);
 
   @RequestLine("HEAD /api/users")
   Response headUsers();
@@ -52,9 +53,28 @@ public interface ExternalServiceClient {
   @RequestLine("HEAD /api/users/param?transactionId={transactionId}")
   Response headUserWithQuery(@Param("transactionId") String transactionId);
 
-  @RequestLine("HEAD /api/users/path/{userId}")
-  Response headUserWithPathParam(@Param("userId") String userId);
+  @RequestLine("HEAD /api/users/path/{transactionId}")
+  Response headUserWithPathParam(@Param("transactionId") String userId);
+
+  @RequestLine("POST /api/users")
+  Response postUser();
 
   @RequestLine("POST /api/users/body")
   Response postUserWithBody(PostUserBody postUserBody);
+
+  @RequestLine("POST /api/users/header")
+  @Headers({"TRANSACTION_ID: {transactionId}"})
+  Response postUserWithHeader(@Param("transactionId") String transactionId);
+
+  @RequestLine("POST /api/users/param?transactionId={transactionId}")
+  Response postUserWithQuery(@Param("transactionId") String transactionId);
+
+  @RequestLine("POST /api/users/path/{transactionId}")
+  Response postUserWithPathParam(@Param("transactionId") String userId);
+
+  @RequestLine("POST /api/users/body/without/response/type")
+  PostUserBody postUserWithBodyWithoutResponseType(PostUserBody postUserBody);
+
+  @RequestLine("GET /api/error")
+  GenericError getError();
 }
