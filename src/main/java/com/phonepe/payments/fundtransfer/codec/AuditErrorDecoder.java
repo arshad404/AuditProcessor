@@ -25,7 +25,7 @@ public abstract class AuditErrorDecoder<A extends AuditContext> implements Error
   @Override
   public Exception decode(String methodKey, Response response) {
     // Extract response details for exception message
-    String responseBody = null;
+    String responseBody;
     if (isNull(response.body()) || response.body().length() == 0) {
       responseBody = "EMPTY";
     } else {

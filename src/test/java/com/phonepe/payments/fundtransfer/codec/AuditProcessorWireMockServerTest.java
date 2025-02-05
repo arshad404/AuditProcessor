@@ -259,9 +259,17 @@ public abstract class AuditProcessorWireMockServerTest {
     stubFor(post(urlPathEqualTo("/api/error/5xx/body"))
         .withRequestBody(equalToJson("{\"transactionId\":\"txn123\", \"method\":\"post\"}"))
         .willReturn(aResponse()
-            .withStatus(501)  // Unauthorized error
+            .withStatus(501)
             .withHeader("Content-Type", "application/json")
             .withBody("{\"error\":\"Server Down\", \"code\":501}")
+        ));
+
+    stubFor(post(urlPathEqualTo("/api/error/4xx/body"))
+        .withRequestBody(equalToJson("{\"transactionId\":\"txn123\", \"method\":\"post\"}"))
+        .willReturn(aResponse()
+            .withStatus(401)  // Unauthorized error
+            .withHeader("Content-Type", "application/json")
+            .withBody("{\"error\":\"Unauthorized access\", \"code\":401}")
         ));
   }
 

@@ -79,7 +79,7 @@ public interface ExternalServiceClient {
 
   @RequestLine("POST /api/error/4xx")
   void postError4xx();
-  
+
   @RequestLine("GET /api/error/5xx")
   void getError5xx();
 
@@ -88,6 +88,9 @@ public interface ExternalServiceClient {
 
   @RequestLine("POST /api/error/5xx/body")
   void postError5xxWithBody(PostUserBody postUserBody);
+
+  @RequestLine("POST /api/error/4xx/body")
+  void postError4xxWithBody(PostUserBody postUserBody);
 
   @RequestLine("PUT /api/users")
   Response putUser();
