@@ -61,6 +61,9 @@ public interface ExternalServiceClient {
   @RequestLine("POST /api/users/body")
   Response postUserWithBody(PostUserBody postUserBody);
 
+  @RequestLine("POST /api/users/body/transform")
+  PostUserBody postUserWithBodyTransform(PostUserBody postUserBody);
+
   @RequestLine("POST /api/users/header")
   @Headers({"TRANSACTION_ID: {transactionId}"})
   Response postUserWithHeader(@Param("transactionId") String transactionId);

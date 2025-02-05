@@ -8,9 +8,8 @@ import java.lang.reflect.Type;
 
 public class DefaultAuditEncoder extends AuditEncoder<DefaultAuditContext> {
 
-  public DefaultAuditEncoder(DefaultRequestContextManager defaultRequestContextManager,
-      Encoder encoder, ObjectMapper objectMapper) {
-    super(objectMapper, defaultRequestContextManager, encoder);
+  public DefaultAuditEncoder(Encoder encoder, ObjectMapper objectMapper, Class<?> client) {
+    super(objectMapper, DefaultRequestContextManager.getInstance(), encoder, client);
   }
 
   @Override

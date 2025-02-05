@@ -4,9 +4,8 @@ import feign.RequestTemplate;
 
 public class DefaultAuditRequestInterceptor extends AuditRequestInterceptor<DefaultAuditContext> {
 
-  public DefaultAuditRequestInterceptor(
-      DefaultRequestContextManager defaultRequestContextManager) {
-    super(defaultRequestContextManager);
+  public DefaultAuditRequestInterceptor() {
+    super(DefaultRequestContextManager.getInstance());
   }
 
   @Override

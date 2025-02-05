@@ -5,7 +5,6 @@ import feign.RequestTemplate;
 import feign.codec.EncodeException;
 import feign.codec.Encoder;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import lombok.Getter;
 
 @Getter
@@ -17,21 +16,12 @@ public abstract class AuditEncoder<A extends AuditContext> implements Encoder {
   private final TransformerManager transformerManager;
 
   protected AuditEncoder(ObjectMapper objectMapper, RequestContextManager<A> requestContextManager,
-      Encoder delegate, ArrayList<Transformer> transformers) {
+      Encoder delegate, Class<?> client) {
     this.objectMapper = objectMapper;
     this.requestContextManager = requestContextManager;
     this.delegate = delegate;
-    transformerManager = new TransformerManager();
-    transformers.forEach(this.transformerManager::addRequestTransformer);
+    transformerManager = new TransformerManager<>(client);
   }
-
-  // No transformer
-  protected AuditEncoder(ObjectMapper objectMapper, RequestContextManager<A> requestContextManager,
-      Encoder delegate) {
-    // Calls primary constructor
-    this(objectMapper, requestContextManager, delegate, new ArrayList<>());
-  }
-
 
   @Override
   public void encode(Object object, Type bodyType, RequestTemplate template)

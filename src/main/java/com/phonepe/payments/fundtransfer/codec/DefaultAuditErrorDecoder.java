@@ -6,9 +6,8 @@ import feign.codec.ErrorDecoder;
 public class DefaultAuditErrorDecoder extends AuditErrorDecoder<DefaultAuditContext> {
 
   protected DefaultAuditErrorDecoder(
-      RequestContextManager<DefaultAuditContext> requestContextManager,
       AuditDataStore<DefaultAuditContext> auditDataStore) {
-    super(requestContextManager, auditDataStore, new ErrorDecoder.Default());
+    super(DefaultRequestContextManager.getInstance(), auditDataStore, new ErrorDecoder.Default());
   }
 
   @Override

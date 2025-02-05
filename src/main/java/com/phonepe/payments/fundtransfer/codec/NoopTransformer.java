@@ -6,6 +6,10 @@ import java.lang.reflect.Type;
 
 public class NoopTransformer implements Transformer {
 
+  public String methodName() {
+    return "default";
+  }
+
   @Override
   public Object transformRequest(Object o, Type type, RequestTemplate requestTemplate) {
     return o;

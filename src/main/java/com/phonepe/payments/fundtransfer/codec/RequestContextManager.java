@@ -6,5 +6,4 @@ public interface RequestContextManager<T extends AuditContext> {
 
   void setContext(T context);
 
-  void clearContext();
 }

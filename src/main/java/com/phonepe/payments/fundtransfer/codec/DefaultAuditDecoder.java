@@ -8,10 +8,10 @@ import java.lang.reflect.Type;
 
 public class DefaultAuditDecoder extends AuditDecoder<DefaultAuditContext> {
 
-  public DefaultAuditDecoder(DefaultRequestContextManager defaultRequestContextManager,
-      Decoder decoder,
-      AuditDataStore<DefaultAuditContext> auditDataStore, ObjectMapper objectMapper) {
-    super(defaultRequestContextManager, decoder, auditDataStore, objectMapper);
+  public DefaultAuditDecoder(Decoder delegate, AuditDataStore<DefaultAuditContext> auditDataStore,
+      ObjectMapper objectMapper, Class<?> client) {
+    super(DefaultRequestContextManager.getInstance(), delegate, client, objectMapper,
+        auditDataStore);
   }
 
   @Override

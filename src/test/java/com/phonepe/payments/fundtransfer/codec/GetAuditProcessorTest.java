@@ -488,13 +488,13 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
       externalServiceClient.postError4xxWithBody(
           new PostUserBody("txn123", "post")); // Simulate the API call
     });
-    assertEquals(401, exception.status());
+    assertEquals(403, exception.status());
     assertTrue(exception.contentUTF8().contains("Unauthorized access"));
     this.getTestAuditDataStore().auditDataMap.forEach(
         (key, val) -> {
           try {
-            assertEquals(501, val.getStatusCode());
-            assertEquals("{\"error\":\"Unauthorized access\", \"code\":401}", val.getErrorBody());
+            assertEquals(403, val.getStatusCode());
+            assertEquals("{\"error\":\"Unauthorized access\", \"code\":403}", val.getErrorBody());
             assertEquals("POST", val.getMethod());
           } catch (Exception e) {
             throw new RuntimeException(e);
@@ -622,5 +622,25 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
           }
         });
   }
+
+  @Test
+  @Order(30)
+  void TestPOSTUserWithBodyWithTranform() {
+    PostUserBody response = externalServiceClient.postUserWithBodyTransform(
+        new PostUserBody("txn", "post")); // THIS txn WILL BE CHANGE TO txn123 via transformer
+    assertEquals("txn123_TRANSFORMED", response.getTransactionId());
+    this.getTestAuditDataStore().auditDataMap.forEach(
+        (key, val) -> {
+          try {
+            assertEquals(200, val.getStatusCode());
+            assertNull(val.getErrorBody());
+            assertNotNull(val.getResponseData());
+            assertEquals("POST", val.getMethod());
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
 
 }

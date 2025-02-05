@@ -16,29 +16,27 @@ public abstract class BaseAuditProcessorTest extends AuditProcessorWireMockServe
 
   protected TestAuditDataStore testAuditDataStore;
   protected ExternalServiceClient externalServiceClient;
-  protected DefaultRequestContextManager defaultRequestContextManager = new DefaultRequestContextManager();
   protected DefaultAuditErrorDecoder defaultAuditErrorDecoder;
+  protected ObjectMapper objectMapper;
 
   BaseAuditProcessorTest() {
     BasicConfigurator.configure();
     CodecRegistry.configure(ExternalServiceClient.class);
-
     testAuditDataStore = new TestAuditDataStore();
-    defaultAuditErrorDecoder = new DefaultAuditErrorDecoder(defaultRequestContextManager,
-        testAuditDataStore);
+    defaultAuditErrorDecoder = new DefaultAuditErrorDecoder(testAuditDataStore);
+    objectMapper = new ObjectMapper();
   }
 
   @BeforeEach
   protected void setupClient() {
     try {
       externalServiceClient = Feign.builder()
-          .requestInterceptor(new DefaultAuditRequestInterceptor(defaultRequestContextManager))
-          .encoder(new DefaultAuditEncoder(defaultRequestContextManager, new JacksonEncoder(),
-              new ObjectMapper()))
-          .decoder(new DefaultAuditDecoder(defaultRequestContextManager, new JacksonDecoder(),
-              testAuditDataStore, new ObjectMapper()))
-          .logger(new DefaultAuditResponseLogger(defaultRequestContextManager,
-              testAuditDataStore))
+          .requestInterceptor(new DefaultAuditRequestInterceptor())
+          .encoder(new DefaultAuditEncoder(new JacksonEncoder(objectMapper), objectMapper,
+              ExternalServiceClient.class))
+          .decoder(new DefaultAuditDecoder(new JacksonDecoder(objectMapper), testAuditDataStore,
+              objectMapper, ExternalServiceClient.class))
+          .logger(new DefaultAuditResponseLogger(testAuditDataStore))
           .errorDecoder(defaultAuditErrorDecoder)
           .logLevel(Level.FULL)
           .target(ExternalServiceClient.class, "http://localhost:3000");

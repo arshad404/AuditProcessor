@@ -6,7 +6,6 @@ import feign.Response;
 import feign.codec.Decoder;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import lombok.Getter;
 
 @Getter
@@ -19,22 +18,14 @@ public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
   private final AuditDataStore<A> auditDataStore;
 
   protected AuditDecoder(RequestContextManager<A> requestContextManager,
-      Decoder delegate, ArrayList<Transformer> transformers, ObjectMapper objectMapper,
+      Decoder delegate, Class<?> client, ObjectMapper objectMapper,
       AuditDataStore<A> auditDataStore) {
     this.requestContextManager = requestContextManager;
     this.delegate = delegate;
     this.objectMapper = objectMapper;
     this.auditDataStore = auditDataStore;
-    transformerManager = new TransformerManager();
-    transformers.forEach(this.transformerManager::addRequestTransformer);
-
+    transformerManager = new TransformerManager<>(client);
   }
-
-  protected AuditDecoder(RequestContextManager<A> requestContextManager,
-      Decoder delegate, AuditDataStore<A> auditDataStore, ObjectMapper objectMapper) {
-    this(requestContextManager, delegate, new ArrayList<>(), objectMapper, auditDataStore);
-  }
-
 
   @Override
   public Object decode(Response response, Type type) throws FeignException {

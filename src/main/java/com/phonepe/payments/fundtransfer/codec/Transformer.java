@@ -6,6 +6,8 @@ import java.lang.reflect.Type;
 
 public interface Transformer {
 
+  String methodName();
+
   // Return the Transformed Object
   Object transformRequest(Object o, Type type, RequestTemplate requestTemplate);
 

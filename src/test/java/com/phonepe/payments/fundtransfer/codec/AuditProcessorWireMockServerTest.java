@@ -46,6 +46,7 @@ public abstract class AuditProcessorWireMockServerTest {
     setupPostMock();
     setupPutMock();
     setupErrorScenarios();
+    setupTransformerScenarios();
   }
 
   @AfterAll
@@ -267,9 +268,9 @@ public abstract class AuditProcessorWireMockServerTest {
     stubFor(post(urlPathEqualTo("/api/error/4xx/body"))
         .withRequestBody(equalToJson("{\"transactionId\":\"txn123\", \"method\":\"post\"}"))
         .willReturn(aResponse()
-            .withStatus(401)  // Unauthorized error
+            .withStatus(403)  // Unauthorized error
             .withHeader("Content-Type", "application/json")
-            .withBody("{\"error\":\"Unauthorized access\", \"code\":401}")
+            .withBody("{\"error\":\"Unauthorized access\", \"code\":403}")
         ));
   }
 
@@ -338,4 +339,16 @@ public abstract class AuditProcessorWireMockServerTest {
                 "{\"transactionId\":\"txn123\", \"method\":\"put\"}")));
   }
 
+  void setupTransformerScenarios() {
+    // With request body
+    stubFor(post(urlPathEqualTo("/api/users/body/transform"))
+        .withRequestBody(equalToJson("{\"transactionId\":\"txn123\", \"method\":\"post\"}"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("TRANSACTION_ID", "txn123")
+            .withHeader("method", "head")
+            .withBody(
+                "{\"transactionId\":\"txn123\", \"method\":\"post\"}")));
+  }
 }
