@@ -61,9 +61,6 @@ public interface ExternalServiceClient {
   @RequestLine("POST /api/users/body")
   Response postUserWithBody(PostUserBody postUserBody);
 
-  @RequestLine("POST /api/users/body/transform")
-  PostUserBody postUserWithBodyTransform(PostUserBody postUserBody);
-
   @RequestLine("POST /api/users/header")
   @Headers({"TRANSACTION_ID: {transactionId}"})
   Response postUserWithHeader(@Param("transactionId") String transactionId);
@@ -113,4 +110,13 @@ public interface ExternalServiceClient {
 
   @RequestLine("PUT /api/users/body/without/response/type")
   PostUserBody putUserWithBodyWithoutResponseType(PostUserBody postUserBody);
+
+  @RequestLine("POST /api/users/body/transform")
+  PostUserBody postUserWithBodyTransform(PostUserBody postUserBody);
+  
+  @RequestTransformer(methodName = "putUserWithBody")
+  default PostUserBody transformPostUserBody(PostUserBody postUserBody) {
+    System.out.println("*** putUserWithBody Transformer invoked! ***");
+    return postUserBody;
+  }
 }

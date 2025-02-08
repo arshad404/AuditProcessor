@@ -37,6 +37,8 @@ public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
       var transformedObject = this.transformerManager.applyResponseTransformers(decodedObject, type,
           response);
 
+      System.out.println(this.transformerManager.getTransformers());
+
       // update the context
       var updatedContext = this.setAuditContext(response, type, transformedObject);
       this.requestContextManager.setContext(updatedContext);

@@ -5,7 +5,7 @@ import feign.RequestTemplate;
 import feign.Response;
 import java.lang.reflect.Type;
 
-public class PostUserWithBodyTransformTransformer implements Transformer {
+public class PostUserWithBodyTransformAnnotation implements Transformer {
 
   public String methodName() {
     return "postUserWithBodyTransform";

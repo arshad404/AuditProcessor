@@ -2,6 +2,7 @@ package com.phonepe.payments.fundtransfer.codec;
 
 import feign.RequestTemplate;
 import feign.Response;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,9 @@ import org.reflections.util.ConfigurationBuilder;
 public class TransformerManager<T> {
 
   private final Class<T> client;
+  private final Map<Class<?>, Object> instances = new HashMap<>();
   private Map<String, Transformer> transformers = new HashMap<>();
+  private Map<String, Method> requestTransformers = new HashMap<>();
 
   public TransformerManager(Class<T> client) {
     this.client = client;
