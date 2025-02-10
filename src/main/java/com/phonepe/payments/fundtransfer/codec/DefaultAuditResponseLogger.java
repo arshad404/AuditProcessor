@@ -7,8 +7,9 @@ import org.apache.commons.io.IOUtils;
 
 public class DefaultAuditResponseLogger extends AuditResponseLogger<DefaultAuditContext> {
 
-  public DefaultAuditResponseLogger(AuditDataStore<DefaultAuditContext> auditDataStore) {
-    super(DefaultRequestContextManager.getInstance(), auditDataStore);
+  public DefaultAuditResponseLogger(AuditDataStore<DefaultAuditContext> auditDataStore,
+      Class<?> client) {
+    super(DefaultRequestContextManager.getInstance(), auditDataStore, client);
   }
 
   @Override

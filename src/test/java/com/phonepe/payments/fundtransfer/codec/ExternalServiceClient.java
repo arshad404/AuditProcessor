@@ -111,12 +111,16 @@ public interface ExternalServiceClient {
   @RequestLine("PUT /api/users/body/without/response/type")
   PostUserBody putUserWithBodyWithoutResponseType(PostUserBody postUserBody);
 
+  // Add the annotation @Transformer(name="postUserWithBodyTransformImpl")
+  @AuditTransformer(value = "postUserWithBodyTransform")
   @RequestLine("POST /api/users/body/transform")
   PostUserBody postUserWithBodyTransform(PostUserBody postUserBody);
-  
-  @RequestTransformer(methodName = "putUserWithBody")
-  default PostUserBody transformPostUserBody(PostUserBody postUserBody) {
-    System.out.println("*** putUserWithBody Transformer invoked! ***");
-    return postUserBody;
-  }
+
+  @AuditTransformer(value = "postUserWithBodyTransform")
+  @RequestLine("POST /api/users/body/transform")
+  PostUserBody postUserWithBodyTransformSecond(PostUserBody postUserBody);
+
+  @AuditTransformer(value = "postUserWithBodyTransform")
+  @RequestLine("POST /api/users/body/transform")
+  Response postUserWithBodyTransformSecondWithResponseReturn(PostUserBody postUserBody);
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phonepe.payments.fundtransfer.codec.model.DeleteHeader;
 import com.phonepe.payments.fundtransfer.codec.model.DeletePath;
 import com.phonepe.payments.fundtransfer.codec.model.DeleteQuery;
@@ -16,6 +17,7 @@ import com.phonepe.payments.fundtransfer.codec.model.GetQuery;
 import com.phonepe.payments.fundtransfer.codec.model.PostUserBody;
 import feign.FeignException;
 import feign.Response;
+import feign.Util;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -625,10 +627,10 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
 
   @Test
   @Order(30)
-  void TestPOSTUserWithBodyWithTranform() {
+  void TestPOSTUserWithBodyWithTransform() {
     PostUserBody response = externalServiceClient.postUserWithBodyTransform(
         new PostUserBody("txn", "post")); // THIS txn WILL BE CHANGE TO txn123 via transformer
-    assertEquals("txn123_TRANSFORMED", response.getTransactionId());
+    assertEquals("txn123_b TRANSFORMED", response.getTransactionId());
     this.getTestAuditDataStore().auditDataMap.forEach(
         (key, val) -> {
           try {
@@ -642,5 +644,36 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
         });
   }
 
+  @Test
+  @Order(31)
+  void TestPOSTUserWithBodyWithTransformInLogger() {
+    try {
+      Response response = externalServiceClient.postUserWithBodyTransformSecondWithResponseReturn(
+          new PostUserBody("txn", "post")); // THIS txn WILL BE CHANGE TO txn123 via transformer
+
+      // Step 1: Read the raw body
+      String rawBody = Util.toString(response.body().asReader(Util.UTF_8));
+
+      // Step 2: Deserialize the raw body to PostUserBody
+      ObjectMapper objectMapper = new ObjectMapper(); // You can configure it as needed
+      PostUserBody postUserBody = objectMapper.readValue(rawBody, PostUserBody.class);
+
+      assertEquals("txn123_LOGTRANSFORMED", postUserBody.getTransactionId());
+
+      this.getTestAuditDataStore().auditDataMap.forEach(
+          (key, val) -> {
+            try {
+              assertEquals(200, val.getStatusCode());
+              assertNull(val.getErrorBody());
+              assertNotNull(val.getResponseData());
+              assertEquals("POST", val.getMethod());
+            } catch (Exception e) {
+              throw new RuntimeException(e);
+            }
+          });
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
 }

@@ -36,7 +36,7 @@ public abstract class BaseAuditProcessorTest extends AuditProcessorWireMockServe
               ExternalServiceClient.class))
           .decoder(new DefaultAuditDecoder(new JacksonDecoder(objectMapper), testAuditDataStore,
               objectMapper, ExternalServiceClient.class))
-          .logger(new DefaultAuditResponseLogger(testAuditDataStore))
+          .logger(new DefaultAuditResponseLogger(testAuditDataStore, ExternalServiceClient.class))
           .errorDecoder(defaultAuditErrorDecoder)
           .logLevel(Level.FULL)
           .target(ExternalServiceClient.class, "http://localhost:3000");

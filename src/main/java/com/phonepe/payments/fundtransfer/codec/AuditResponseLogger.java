@@ -8,11 +8,13 @@ public abstract class AuditResponseLogger<T extends AuditContext> extends Logger
 
   private final RequestContextManager<T> requestContextManager;
   private final AuditDataStore<T> auditDataStore;
+  private final TransformerManager transformerManager;
 
   protected AuditResponseLogger(RequestContextManager<T> requestContextManager,
-      AuditDataStore<T> auditDataStore) {
+      AuditDataStore<T> auditDataStore, Class<?> client) {
     this.requestContextManager = requestContextManager;
     this.auditDataStore = auditDataStore;
+    this.transformerManager = new TransformerManager<>(client);
   }
 
   @Override
@@ -26,6 +28,10 @@ public abstract class AuditResponseLogger<T extends AuditContext> extends Logger
       long elapsedTime) throws IOException {
 
     Boolean isDecoderSkipped = Utils.isDecoderSkipped(configKey) && response.status() < 400;
+
+    if (Boolean.TRUE.equals(isDecoderSkipped)) {
+      response = transformerManager.applyResponseTransformerInLogger(response);
+    }
 
     var context = requestContextManager.getContext();
     this.updateAuditContext(context, response, isDecoderSkipped);
