@@ -33,10 +33,11 @@ public abstract class BaseAuditProcessorTest extends AuditProcessorWireMockServe
       externalServiceClient = Feign.builder()
           .requestInterceptor(new DefaultAuditRequestInterceptor())
           .encoder(new DefaultAuditEncoder(new JacksonEncoder(objectMapper), objectMapper,
-              ExternalServiceClient.class))
+              FeignClientRequestTransformer.class))
           .decoder(new DefaultAuditDecoder(new JacksonDecoder(objectMapper), testAuditDataStore,
-              objectMapper, ExternalServiceClient.class))
-          .logger(new DefaultAuditResponseLogger(testAuditDataStore, ExternalServiceClient.class))
+              objectMapper, FeignClientResponseTransformer.class))
+          .logger(new DefaultAuditResponseLogger(testAuditDataStore,
+              FeignClientLoggerTransformer.class))
           .errorDecoder(defaultAuditErrorDecoder)
           .logLevel(Level.FULL)
           .target(ExternalServiceClient.class, "http://localhost:3000");

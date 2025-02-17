@@ -15,6 +15,15 @@
         </groupId> <!-- Ensure you're using an up-to-date version -->
         <version>3.1.2</version>
       </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgs>--enable-preview</compilerArgs>
+          <source>21</source>
+          <target>21</target>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
     </plugins>
   </build>
 

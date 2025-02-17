@@ -630,7 +630,7 @@ class GetAuditProcessorTest extends BaseAuditProcessorTest {
   void TestPOSTUserWithBodyWithTransform() {
     PostUserBody response = externalServiceClient.postUserWithBodyTransform(
         new PostUserBody("txn", "post")); // THIS txn WILL BE CHANGE TO txn123 via transformer
-    assertEquals("txn123_b TRANSFORMED", response.getTransactionId());
+    assertEquals("txn123_TRANSFORMED", response.getTransactionId());
     this.getTestAuditDataStore().auditDataMap.forEach(
         (key, val) -> {
           try {

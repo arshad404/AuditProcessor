@@ -1,5 +1,7 @@
 package com.phonepe.payments.fundtransfer.codec;
 
+import static java.util.Objects.nonNull;
+
 import feign.Logger;
 import feign.Response;
 import java.io.IOException;
@@ -14,7 +16,7 @@ public abstract class AuditResponseLogger<T extends AuditContext> extends Logger
       AuditDataStore<T> auditDataStore, Class<?> client) {
     this.requestContextManager = requestContextManager;
     this.auditDataStore = auditDataStore;
-    this.transformerManager = new TransformerManager<>(client);
+    this.transformerManager = new TransformerManager(client);
   }
 
   @Override
@@ -30,7 +32,12 @@ public abstract class AuditResponseLogger<T extends AuditContext> extends Logger
     Boolean isDecoderSkipped = Utils.isDecoderSkipped(configKey) && response.status() < 400;
 
     if (Boolean.TRUE.equals(isDecoderSkipped)) {
-      response = transformerManager.applyResponseTransformerInLogger(response);
+
+      // Retrieve transformer name
+      String transformerName = Utils.getTransformerName(response.request().requestTemplate());
+      if (nonNull(transformerName)) {
+        response = transformerManager.applyLoggerTransformation(transformerName, response);
+      }
     }
 
     var context = requestContextManager.getContext();

@@ -1,43 +1,32 @@
 package com.phonepe.payments.fundtransfer.codec;
 
+import static java.util.Objects.nonNull;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phonepe.payments.fundtransfer.codec.model.PostUserBody;
-import feign.RequestTemplate;
 import feign.Response;
 import feign.Util;
 import java.io.IOException;
-import java.lang.reflect.Type;
+import lombok.extern.slf4j.Slf4j;
 
-public class PostUserWithBodyTransformAnnotation implements Transformer {
+@Slf4j
+public class FeignClientLoggerTransformer {
 
-  public String value() {
-    return "postUserWithBodyTransform";
-  }
-
-  @Override
-  public Object transformRequest(Object o, Type type, RequestTemplate requestTemplate) {
-    PostUserBody postUserBody = (PostUserBody) o;
-    postUserBody.setTransactionId(postUserBody.getTransactionId() + "123");
-    return o;
-  }
-
-  @Override
-  public Object transformResponse(Object o, Type type, Response response) {
-    PostUserBody postUserBody = (PostUserBody) o;
-    postUserBody.setTransactionId(postUserBody.getTransactionId() + "_TRANSFORMED");
-    return o;
-  }
-
-  @Override
+  @AuditTransformer(name = "postUserWithBodyTransform")
   public Response transformResponseInLogger(Response response) {
     try {
       // Step 1: Read the raw body
       String rawBody = Util.toString(response.body().asReader(Util.UTF_8));
 
+      if (nonNull(response.body().length())) {
+        log.warn("Empty response body string. Skipping transformation.");
+        return response;
+      }
+
       // Step 2: Deserialize the raw body to PostUserBody
       ObjectMapper objectMapper = new ObjectMapper(); // You can configure it as needed
       PostUserBody postUserBody = objectMapper.readValue(rawBody, PostUserBody.class);
-      postUserBody.setTransactionId(postUserBody.getTransactionId() + "_LOGTRANSFORMED");
+      postUserBody.setTransactionId("%s_LOGTRANSFORMED".formatted(postUserBody.getTransactionId()));
 
       // Step 4: Serialize the transformed body back to JSON
       String transformedBodyJson = objectMapper.writeValueAsString(postUserBody);

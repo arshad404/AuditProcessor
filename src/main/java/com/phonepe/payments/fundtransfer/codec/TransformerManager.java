@@ -8,73 +8,86 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
-import org.reflections.util.ConfigurationBuilder;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @Setter
-public class TransformerManager<T> {
+public class TransformerManager {
 
-  private final Class<T> client;
-  private final Map<String, Transformer> transformers = new HashMap<>();
+  private final Map<String, Method> requestTransformers = new HashMap<>();
+  private final Map<String, Method> responseTransformers = new HashMap<>();
+  private final Map<String, Method> loggerTransformers = new HashMap<>();
+  private final Object transformerInstance;
 
-  public TransformerManager(Class<T> client) {
-    this.client = client;
-
+  public TransformerManager(Class<?> transformerClass) {
     try {
-      // Initialize transformers as before
-      String packageName = client.getPackageName();
-      Reflections reflections = new Reflections(
-          new ConfigurationBuilder()
-              .forPackage(packageName)
-              .addScanners(Scanners.SubTypes)
-      );
+      transformerInstance = transformerClass.getDeclaredConstructor().newInstance();
+      for (Method method : transformerClass.getDeclaredMethods()) {
+        processMethod(method);
+      }
+    } catch (ReflectiveOperationException e) {
+      throw new CodecException("Error initializing TransformerManager", e);
+    }
+  }
 
-      var classes = reflections.getSubTypesOf(Transformer.class);
+  public Object applyRequestTransformation(String name, Object o, Type type,
+      RequestTemplate requestTemplate) {
+    return invokeTransformer(requestTransformers.get(name), o, type, requestTemplate);
+  }
 
-      for (Class<? extends Transformer> transformerClass : classes) {
-        Transformer transformer = transformerClass.getDeclaredConstructor().newInstance();
-        transformers.putIfAbsent(transformer.value(), transformer);
+  public Object applyResponseTransformation(String name, Object o, Type type, Response response) {
+    return invokeTransformer(responseTransformers.get(name), o, type, response);
+  }
+
+  public Response applyLoggerTransformation(String name, Response response) {
+    return (Response) invokeTransformer(loggerTransformers.get(name), response);
+  }
+
+  private Object invokeTransformer(Method method, Object... args) {
+    try {
+      if (method != null) {
+        return method.invoke(transformerInstance, args);
       }
     } catch (Exception e) {
-      throw new CodecException("Exception occurred while initializing TransformerManager", e);
+      throw new CodecException("Error invoking transformer method: %s".formatted(method.getName()),
+          e);
     }
+    return args[0];
   }
 
-  // Retrieve transformer for request transformation
-  public Object applyRequestTransformers(Object input, Type type, RequestTemplate requestTemplate) {
-    String transformerName = getTransformerName(requestTemplate.methodMetadata().method());
-    if (transformerName != null && transformers.containsKey(transformerName)) {
-      return transformers.get(transformerName).transformRequest(input, type, requestTemplate);
+  private void processMethod(Method method) {
+    if (!method.isAnnotationPresent(AuditTransformer.class)) {
+      return;
     }
-    return input;
-  }
 
-  // Retrieve transformer for response transformation
-  public Object applyResponseTransformers(Object input, Type type, Response response) {
-    String transformerName = getTransformerName(
-        response.request().requestTemplate().methodMetadata().method());
-    if (transformerName != null && transformers.containsKey(transformerName)) {
-      return transformers.get(transformerName).transformResponse(input, type, response);
-    }
-    return input;
-  }
-
-  // Retrieve transformer for response transformation
-  public Response applyResponseTransformerInLogger(Response response) {
-    String transformerName = getTransformerName(
-        response.request().requestTemplate().methodMetadata().method());
-    if (transformerName != null && transformers.containsKey(transformerName)) {
-      return transformers.get(transformerName).transformResponseInLogger(response);
-    }
-    return response;
-  }
-
-
-  // Helper to extract the transformer name from @AuditTransformer annotation
-  private String getTransformerName(Method method) {
     AuditTransformer annotation = method.getAnnotation(AuditTransformer.class);
-    return (annotation != null) ? annotation.value() : null;
+    String returnType = method.getReturnType().getSimpleName();
+
+    if ("Object".equals(returnType)) {
+      processObjectMethod(method, annotation);
+    } else if ("Response".equals(returnType)) {
+      processResponseMethod(method, annotation);
+    } else {
+      log.error("Unexpected method return type: {}", returnType);
+    }
+  }
+
+  private void processObjectMethod(Method method, AuditTransformer annotation) {
+    if (method.getParameterTypes().length == 3) {
+      if (method.getParameterTypes()[2] == RequestTemplate.class) {
+        requestTransformers.put(annotation.name(), method);
+      } else if (method.getParameterTypes()[2] == Response.class) {
+        responseTransformers.put(annotation.name(), method);
+      }
+    }
+  }
+
+  private void processResponseMethod(Method method, AuditTransformer annotation) {
+    if (method.getParameterTypes().length == 1 &&
+        method.getParameterTypes()[0] == Response.class) {
+      loggerTransformers.put(annotation.name(), method);
+    }
   }
 }
+

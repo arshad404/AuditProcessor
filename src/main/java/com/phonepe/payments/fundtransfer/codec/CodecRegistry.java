@@ -29,7 +29,7 @@ public class CodecRegistry {
 
   // Method to check if a given method's return type is Response.class
   public static boolean isAPIReturnOfResponseType(String className, String methodName) {
-    String methodKey = className + "#" + methodName;
+    String methodKey = "%s#%s".formatted(className, methodName);
 
     // Check if the method key exists and its return type is Response.class
     return isApiReturnTypeResponse.getOrDefault(methodKey, false);

@@ -20,25 +20,30 @@ public abstract class AuditEncoder<A extends AuditContext> implements Encoder {
     this.objectMapper = objectMapper;
     this.requestContextManager = requestContextManager;
     this.delegate = delegate;
-    transformerManager = new TransformerManager<>(client);
+    transformerManager = new TransformerManager(client);
   }
 
   @Override
   public void encode(Object object, Type bodyType, RequestTemplate template)
       throws EncodeException {
     try {
-      // Transform
-      var transformedObject = this.transformerManager.applyRequestTransformers(object, bodyType,
-          template);
+
+      // Retrieve transformer name
+      String transformerName = Utils.getTransformerName(template);
+
+      if (transformerName != null) {
+        object = transformerManager.applyRequestTransformation(transformerName, object, bodyType,
+            template);
+      }
 
       // Update the context
-      A auditContext = setAuditContext(object, transformedObject, bodyType, template);
+      A auditContext = setAuditContext(object, bodyType, template);
       requestContextManager.setContext(auditContext);
 
       // Encode the request
       var transformedType = this.objectMapper.getTypeFactory()
-          .findClass(transformedObject.getClass().getName());
-      delegate.encode(transformedObject, transformedType, template);
+          .findClass(object.getClass().getName());
+      delegate.encode(object, transformedType, template);
     } catch (ClassNotFoundException e) {
       throw new CodecException("Failed to encode the audit request", e);
     }
@@ -46,6 +51,5 @@ public abstract class AuditEncoder<A extends AuditContext> implements Encoder {
   }
 
   // dev can store the real object or the transformed object
-  protected abstract A setAuditContext(Object object, Object transformedObject, Type bodyType,
-      RequestTemplate template);
+  protected abstract A setAuditContext(Object object, Type bodyType, RequestTemplate template);
 }

@@ -1,27 +1,13 @@
 package com.phonepe.payments.fundtransfer.codec;
 
-import feign.RequestTemplate;
-import feign.Response;
-import java.lang.reflect.Type;
+import lombok.Getter;
+import lombok.Setter;
 
-public class NoopTransformer implements Transformer {
+@Getter
+@Setter
+public class NoopTransformer {
 
-  public String value() {
-    return "default";
+  NoopTransformer() {
   }
 
-  @Override
-  public Object transformRequest(Object o, Type type, RequestTemplate requestTemplate) {
-    return o;
-  }
-
-  @Override
-  public Object transformResponse(Object o, Type type, Response response) {
-    return o;
-  }
-
-  @Override
-  public Response transformResponseInLogger(Response response) {
-    return response;
-  }
 }

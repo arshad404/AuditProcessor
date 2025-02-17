@@ -111,16 +111,15 @@ public interface ExternalServiceClient {
   @RequestLine("PUT /api/users/body/without/response/type")
   PostUserBody putUserWithBodyWithoutResponseType(PostUserBody postUserBody);
 
-  // Add the annotation @Transformer(name="postUserWithBodyTransformImpl")
-  @AuditTransformer(value = "postUserWithBodyTransform")
+  @AuditTransformer(name = "postUserWithBodyTransform")
   @RequestLine("POST /api/users/body/transform")
   PostUserBody postUserWithBodyTransform(PostUserBody postUserBody);
 
-  @AuditTransformer(value = "postUserWithBodyTransform")
+  @AuditTransformer(name = "postUserWithBodyTransform")
   @RequestLine("POST /api/users/body/transform")
   PostUserBody postUserWithBodyTransformSecond(PostUserBody postUserBody);
 
-  @AuditTransformer(value = "postUserWithBodyTransform")
+  @AuditTransformer(name = "postUserWithBodyTransform")
   @RequestLine("POST /api/users/body/transform")
   Response postUserWithBodyTransformSecondWithResponseReturn(PostUserBody postUserBody);
 }

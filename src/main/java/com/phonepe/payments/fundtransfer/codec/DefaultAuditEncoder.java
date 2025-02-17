@@ -13,8 +13,8 @@ public class DefaultAuditEncoder extends AuditEncoder<DefaultAuditContext> {
   }
 
   @Override
-  protected DefaultAuditContext setAuditContext(Object object, Object transformedObject,
-      Type bodyType, RequestTemplate template) {
+  protected DefaultAuditContext setAuditContext(Object object, Type bodyType,
+      RequestTemplate template) {
     try {
       var context = this.getRequestContextManager().getContext();
       context.setRequestData(this.getObjectMapper().writeValueAsBytes(object));

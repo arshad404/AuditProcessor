@@ -24,7 +24,7 @@ public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
     this.delegate = delegate;
     this.objectMapper = objectMapper;
     this.auditDataStore = auditDataStore;
-    transformerManager = new TransformerManager<>(client);
+    transformerManager = new TransformerManager(client);
   }
 
   @Override
@@ -33,10 +33,14 @@ public abstract class AuditDecoder<A extends AuditContext> implements Decoder {
       // Decode
       var decodedObject = this.delegate.decode(response, type);
 
+      // Retrieve transformer name
+      String transformerName = Utils.getTransformerName(response.request().requestTemplate());
+
       // Transform
-      var transformedObject = this.transformerManager.applyResponseTransformers(decodedObject, type,
+      var transformedObject = this.transformerManager.applyResponseTransformation(transformerName,
+          decodedObject, type,
           response);
-      
+
       // update the context
       var updatedContext = this.setAuditContext(response, type, transformedObject);
       this.requestContextManager.setContext(updatedContext);
