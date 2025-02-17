@@ -15,9 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class TransformerManager {
 
-  private final Map<String, Method> requestTransformers = new HashMap<>();
-  private final Map<String, Method> responseTransformers = new HashMap<>();
-  private final Map<String, Method> loggerTransformers = new HashMap<>();
+  private static final Map<String, Method> requestTransformers = new HashMap<>();
+  private static final Map<String, Method> responseTransformers = new HashMap<>();
+  private static final Map<String, Method> loggerTransformers = new HashMap<>();
   private final Object transformerInstance;
 
   public TransformerManager(Class<?> transformerClass) {
